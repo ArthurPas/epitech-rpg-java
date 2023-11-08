@@ -1,64 +1,71 @@
 <diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>0</x><y>580</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Map
 --
-+ name : String
-+ number : int
-+ heigth : int
-+ witdh : int
-+ monster : Monster
-+ isDoorOpen : boolean
-+ chest : Chest
+- name : String
+- number : int
+- heigth : int
+- witdh : int
+- monster : Monster
+- isDoorOpen : boolean
+- chest : Chest
 --
++ Map( String, int, int, int, Monster, Chest)
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1020</x><y>280</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Monster
 --
-+ dropWeaponProb : float
+- dropWeaponProb : float
 --
-+ drop(float) : Item
++ Monster(float)
+# drop(float) : Item
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>460</x><y>280</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Weapon
 --
-+ damage : int
-+ criticalStrikeProb : float
-+ criticalFailureProb : float
-
+- damage : int
+- criticalStrikeProb : float
+- criticalFailureProb : float
 --
-+ attack (Character) : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1140</x><y>0</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Abstract&gt;&gt;
++ Weapon(int, float, float)
+# attack (Character) : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1140</x><y>0</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Abstract&gt;&gt;
 Character
 --
-+ name : String
-+ stat : Map&lt;Stat, int&gt;
-+ weaponEquiped : Weapon
+- name : String
+- stat : Map&lt;Stat, int&gt;
+- weaponEquiped : Weapon
 --
-+ speak(String, Character) : void
-+ attack (Weapon) : boolean 
-+ move(int , int) : boolean
++ Character(String, Map&lt;Stat, int&gt;, Weapon)
+# speak(String, Character) : void
+# attack (Weapon) : boolean 
+# move(int , int) : boolean
+
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>300</x><y>590</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Chest
 --
-+ items : List&lt;Item&gt;
-+ moneyAvaible: int
-+ canOpen : boolean
+- items : List&lt;Item&gt;
+- moneyAvaible: int
+- canOpen : boolean
 --
-+ sell(int) : Weapon
-+ buy(Weapon) : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>280</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
++ Chest( List&lt;Item&gt;, int)
+# sell(int) : Weapon
+# buy(Weapon) : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>280</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Player
 --
-+ xpLevel : int
-+ inventory : list&lt;Item&gt;
-+ money : int
+- xpLevel : int
+- inventory : list&lt;Item&gt;
+- money : int
 --
-+ changeWeapon(Weapon) : boolean
++ Player(int, list&lt;Item&gt;, int)
+# changeWeapon(Weapon) : boolean
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>610</x><y>0</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Abstract&gt;&gt;
 Package::
 Item
 --
-+ name : String
-+ cost : int
-+ rare : Rarity
-+ durability : int
+- name : String
+- cost : int
+- rare : Rarity
+- durability : int
 --
-+ decreaseDurability() : void
++ Item(String, int, Rarity, int)
+# decreaseDurability() : void
 
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>220</x><y>0</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
 Rarity
@@ -68,8 +75,10 @@ RARE,
 LEGENDARY</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>280</y><w>210</w><h>190</h></coordinates><panel_attributes>Package::
 Equipment
 --
-+ bonusCapacity : Map&lt;Stat, int&gt;
+- bonusCapacity : Map&lt;Stat, int&gt;
+
 --
++ Equipment(Map&lt;Stat, int&gt;)
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>0</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;enumeration&gt;&gt;
 Stat
 --
@@ -79,9 +88,11 @@ AGILITY
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>10</x><y>320</y><w>210</w><h>190</h></coordinates><panel_attributes>Package:
 Game
 --
-+ maps : List&lt;Map&gt;
-+ player : Player
-+ difficulty : int
-+ isWin : boolean
+- maps : List&lt;Map&gt;
+- player : Player
+- difficulty : int
+- isWin : boolean
 --
++ Game(List&lt;Map&gt;, Player, int)
++ Play()
 </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>560</x><y>180</y><w>160</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>140;10;10;100</additional_attributes></element><element><id>Relation</id><coordinates><x>700</x><y>180</y><w>130</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;100</additional_attributes></element><element><id>Relation</id><coordinates><x>1250</x><y>180</y><w>130</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;110;100</additional_attributes></element><element><id>Relation</id><coordinates><x>1110</x><y>180</y><w>160</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>140;10;10;100</additional_attributes></element></diagram>
