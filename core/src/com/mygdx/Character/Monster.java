@@ -11,9 +11,23 @@ import java.util.Map;
 
 public class Monster extends Character {
     private  float dropWeaponProb;
-    public Monster(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position) {
+
+    private float vivacity;
+
+    public Monster(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position, float dropWeaponProb, float vivacity) {
         super(name, stat, weaponEquiped, position);
+        this.dropWeaponProb = dropWeaponProb;
+        this.vivacity = vivacity;
     }
+
+    public float getVivacity() {
+        return vivacity;
+    }
+
+    public void setVivacity(float vivacity) {
+        this.vivacity = vivacity;
+    }
+
     public void move(Room room, Tile position) {
         List<Tile> neighbors = room.getNeighbors(position,1);
         Tile destination = neighbors.get((int) (Math.random() * neighbors.size()));

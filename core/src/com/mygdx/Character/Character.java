@@ -40,8 +40,8 @@ public class Character {
         return stat;
     }
 
-    public void setStat(Map<Stat, Integer> stat) {
-        this.stat = stat;
+    public void setStat(Stat stat, int value) {
+        this.stat.put(stat, value);
     }
 
     public Weapon getWeaponEquiped() {
