@@ -14,21 +14,46 @@ public class Room {
     private int width;
     private int height;
     private final List<Tile> tiles;
+    private int RELATIVEWIDTH;
+    private int RELATIVEHEIGHT;
 
     public Room(int width, int height) {
         this.width = width;
         this.height = height;
         this.tiles = new ArrayList<>();
+        this.RELATIVEWIDTH = Gdx.graphics.getHeight() / width;
+        this.RELATIVEHEIGHT = Gdx.graphics.getWidth() / height;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                this.tiles.add(new Tile((Gdx.graphics.getHeight()/width)*i,j*(Gdx.graphics.getWidth()/height), false, "ground.png"));
-                System.out.println("Tile added at " + (800/width)*i + ", " + j*(800/height));
+                if(i == 2 && j == 1) {
+                    this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, false, "chest_1.png"));
+                }
+                this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, false, "ground.png"));
+                if (i == 3 && j == height - 1) {
+                    this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, true, "fence.png"));
+                }
             }
         }
     }
 
     public Tile getTile(int id) {
         return tiles.get(id);
+    }
+
+    public int getRELATIVEWIDTH() {
+        return RELATIVEWIDTH;
+    }
+
+    public void setRELATIVEWIDTH(int RELATIVEWIDTH) {
+        this.RELATIVEWIDTH = RELATIVEWIDTH;
+    }
+
+    public int getRELATIVEHEIGHT() {
+        return RELATIVEHEIGHT;
+    }
+
+    public void setRELATIVEHEIGHT(int RELATIVEHEIGHT) {
+        this.RELATIVEHEIGHT = RELATIVEHEIGHT;
     }
 
     public int getWidth() {
