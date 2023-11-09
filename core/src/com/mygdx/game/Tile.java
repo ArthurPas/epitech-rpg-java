@@ -1,5 +1,9 @@
 package com.mygdx.game;
 
+import com.mygdx.utils.UtilsFunc;
+
+import java.util.Objects;
+
 public class Tile {
     private static int id = 0;
     private int x;
@@ -51,6 +55,30 @@ public class Tile {
     public String getPathToAsset() {
         return pathToAsset;
     }
+    public boolean isNeighbor(Room room, Tile otherTile){
+        return (this.x == otherTile.getX() && this.y == otherTile.getY() + room.getRelativeHeight()) ||
+                (this.x == otherTile.getX() && this.y == otherTile.getY() - room.getRelativeHeight()) ||
+                (this.y == otherTile.getY() && this.x == otherTile.getX() + room.getRelativeWidth() ) ||
+                (this.y == otherTile.getY() && this.x == otherTile.getX() - room.getRelativeWidth());
+    }
+
+    public boolean isInTile(Room room, int x, int y){
+//        return UtilsFunc.isClickIn(this.x, room.getRelativeWidth(),x,y);
+        return (this.x <= x && this.x + room.getRelativeWidth() >= x) && (this.y <= y && this.y + room.getRelativeHeight() >= y);
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return x == tile.x && y == tile.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
 
     public void setPathToAsset(String pathToAsset) {
         this.pathToAsset = pathToAsset;

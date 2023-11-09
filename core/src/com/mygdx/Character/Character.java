@@ -1,5 +1,7 @@
 package com.mygdx.Character;
 
+import com.mygdx.game.Room;
+import com.mygdx.game.Tile;
 import com.mygdx.item.Weapon;
 
 import java.util.Map;
@@ -9,10 +11,21 @@ public class Character {
 
     private Weapon weaponEquiped;
 
-    public Character(String name, Map<Stat, Integer> stat, Weapon weaponEquiped) {
+    public Tile position;
+
+    public Tile getPosition() {
+        return position;
+    }
+
+    public void setPosition(Tile position) {
+        this.position = position;
+    }
+
+    public Character(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position) {
         this.name = name;
         this.stat = stat;
         this.weaponEquiped = weaponEquiped;
+        this.position = position;
     }
 
     public String getName() {
@@ -44,8 +57,8 @@ public class Character {
     protected boolean attack(Weapon weapon){
         return false;
     }
-    // :TODO replace paramaters with tile
-    protected boolean move (int x, int y){
-        return false;
+
+    public void move(Room room, Tile position, int x, int y) {
+        setPosition(position);
     }
 }
