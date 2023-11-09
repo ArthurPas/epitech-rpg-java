@@ -1,8 +1,10 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.Character.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +18,20 @@ public class Room {
     private int relativeWidth;
     private int relativeHeight;
 
-    public Room(int width, int height) {
+    private Monster monster;
+
+    public Monster getMonster() {
+        return monster;
+    }
+
+    public void setMonster(Monster monster) {
+        this.monster = monster;
+    }
+
+    public Room(int width, int height, Monster monster) {
         this.width = width;
         this.height = height;
+        this.monster = monster;
         this.tiles = new ArrayList<>();
         this.relativeWidth = Gdx.graphics.getHeight() / width;
         this.relativeHeight = Gdx.graphics.getWidth() / height;
@@ -95,4 +108,7 @@ public class Room {
         return map;
     }
 
+    public List<Tile> getTiles() {
+        return tiles;
+    }
 }
