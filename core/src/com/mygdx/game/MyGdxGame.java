@@ -48,10 +48,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void create() {
         batch = new SpriteBatch();
         font  = new BitmapFont();
-        Gdx.graphics.setContinuousRendering(false);
-        Gdx.graphics.requestRendering();
-        Stage Stage = new Stage();
-        Stage.setActionsRequestRendering(false);
 
 
         List<Room> rooms = new ArrayList<>();
@@ -59,7 +55,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         stat.put(Stat.HP, 200);
         stat.put(Stat.STRENGTH, 1);
         stat.put(Stat.AGILITY, 10);
-        monster = new Monster("Wolf", stat, new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0), null, 0, 0.7f);
+        monster = new Monster("Wolf", stat, new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0,"item/weapon/sword22.png"), null, 0, 0.7f);
         rooms.add(new Room(10, 10, monster));
         player = new Player(0, null, 10, null);
         game = new Game(rooms, player, 1);
@@ -161,8 +157,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
         List<Item> stuff = new ArrayList<>();
         stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
-
-        Player player = new Player(0, stuff, 10);
+        player.setInventory(stuff);
 
         ChestInterface test = new ChestInterface(weapons,player,batch,2);
 //        for(Sprite sprite :test.displayChestInterface()){

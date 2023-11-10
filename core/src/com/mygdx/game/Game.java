@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
-import com.mygdx.Character.Player;
-import com.mygdx.Character.Stat;
+import com.mygdx.character.Player;
+import com.mygdx.character.Stat;
 
 import java.util.HashMap;
 import java.util.List;

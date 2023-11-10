@@ -18,7 +18,7 @@ public class Player extends Character {
     private int money;
 
     public Player(int xpLevel, List<Item> inventory, int money, Tile position) {
-        super("Player", Game.basicStat(100,2,10), new Weapon("Basic sword", 1, Rarity.COMMON, 100, 10, 4, 0),position);
+        super("Player", Game.basicStat(100,2,10), new Weapon("Basic sword", 1, Rarity.COMMON, 100, 10, 4, 0,"item/weapon/sword8.png"),position);
         this.xpLevel = xpLevel;
         this.inventory = new ArrayList<>();
         this.money = 0;

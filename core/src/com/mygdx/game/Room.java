@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.Character.Monster;
+import com.mygdx.character.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
