@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.mygdx.Character.Player;
 import com.mygdx.Character.Stat;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,14 @@ public class Game {
 
    public boolean isWin() {
       return rooms.get(rooms.size()-1).getMonster().getStat().get(Stat.HP) <= 0;
+   }
+
+   public static Map<Stat, Integer> basicStat(int hp, int strength, int agility) {
+      Map<Stat, Integer> stats = new HashMap<>();
+      stats.put(Stat.HP, hp);
+      stats.put(Stat.STRENGTH, strength);
+      stats.put(Stat.AGILITY, agility);
+      return stats;
    }
 
    public void setWin(boolean win) {

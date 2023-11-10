@@ -20,12 +20,17 @@ public class Room {
 
     private Monster monster;
 
-    public Monster getMonster() {
-        return monster;
+    private Tile chestTile;
+
+    private Tile exitTile;
+
+
+    public Tile getExitTile() {
+        return exitTile;
     }
 
-    public void setMonster(Monster monster) {
-        this.monster = monster;
+    public void setExitTile(Tile exitTile) {
+        this.exitTile = exitTile;
     }
 
     public Room(int width, int height, Monster monster) {
@@ -37,15 +42,42 @@ public class Room {
         this.relativeHeight = Gdx.graphics.getWidth() / height;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if(i == 2 && j == 1) {
-                    this.tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, "chest_1.png"));
-                }
                 this.tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, "ground.png"));
-                if (i == 3 && j == height - 1) {
-                    this.tiles.add(new Tile(relativeWidth * i, relativeHeight * j, true, "fence.png"));
-                }
             }
         }
+        this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
+        this.exitTile = tiles.get(tiles.size() - 1);
+    }
+
+    public Monster getMonster() {
+        return monster;
+    }
+
+    public List<Tile> getFightsTiles(){
+        List<Tile> fightTiles = new ArrayList<>(2);
+
+        int indexMidle = ((width*height)/2)-height/2;
+        if(width%2 == 0) {
+            fightTiles.add(tiles.get(indexMidle + 1));
+            fightTiles.add(tiles.get(indexMidle));
+            fightTiles.add(tiles.get(indexMidle - 1));
+        }else{
+            //Good luck for explain this : 23:30
+            indexMidle = (((width*height)/2)+(height%((height/2)+1))-(height/2));
+            System.out.println(indexMidle);
+            fightTiles.add(tiles.get(indexMidle+ 1));
+            fightTiles.add(tiles.get(indexMidle));
+            fightTiles.add(tiles.get(indexMidle - 1));
+        }
+        return fightTiles;
+    }
+
+    public void setMonster(Monster monster) {
+        this.monster = monster;
+    }
+
+    public Tile getRandomTile() {
+        return tiles.get((int) (Math.random() * tiles.size()));
     }
 
     public List<Tile> getNeighbors(Tile originTile, int range) {
@@ -110,5 +142,13 @@ public class Room {
 
     public List<Tile> getTiles() {
         return tiles;
+    }
+
+    public Tile getChestTile() {
+        return chestTile;
+    }
+
+    public void setChestTile(Tile chestTile) {
+        this.chestTile = chestTile;
     }
 }
