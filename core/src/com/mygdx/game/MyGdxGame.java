@@ -4,17 +4,21 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer;
-import com.mygdx.Character.Character;
-import com.mygdx.Character.Monster;
-import com.mygdx.Character.Player;
-import com.mygdx.Character.Stat;
+import com.mygdx.character.Character;
+import com.mygdx.character.Monster;
+import com.mygdx.character.Player;
+import com.mygdx.character.Stat;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashMap;import com.mygdx.character.Player;
+import com.mygdx.item.Item;
+import com.mygdx.item.Rarity;
+import com.mygdx.item.Weapon;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -92,6 +96,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
         }
+
     }
 
     @Override
@@ -149,6 +154,23 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         if (game.isWin()) {
             //TODO : add a win screen
             System.out.println("You win");
+        }
+
+        List<Weapon> weapons = new ArrayList<>();
+        weapons.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
+        weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
+        List<Item> stuff = new ArrayList<>();
+        stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
+
+        Player player = new Player(0, stuff, 10);
+
+        ChestInterface test = new ChestInterface(weapons,player,batch,2);
+//        for(Sprite sprite :test.displayChestInterface()){
+//                sprite.draw(batch);
+//                System.out.println(sprite.getX());
+//            }
+        for(Sprite sprite : test.displayChestInterface()){
+            sprite.draw(batch);
         }
         batch.end();
     }

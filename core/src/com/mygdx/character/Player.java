@@ -1,4 +1,4 @@
-package com.mygdx.Character;
+package com.mygdx.character;
 
 import com.mygdx.game.Game;
 import com.mygdx.game.Room;

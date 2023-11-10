@@ -1,4 +1,4 @@
-package com.mygdx.Character;
+package com.mygdx.character;
 
 public enum Stat {
     HP,

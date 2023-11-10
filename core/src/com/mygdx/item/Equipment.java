@@ -1,6 +1,6 @@
 package com.mygdx.item;
 
-import com.mygdx.Character.Stat;
+import com.mygdx.character.Stat;
 
 import java.util.Map;
 
