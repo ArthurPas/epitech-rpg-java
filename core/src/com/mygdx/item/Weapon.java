@@ -7,8 +7,8 @@ public class Weapon  extends Item {
     private float criticalStrikeProb;
     private float criticalFailureProb;
 
-    public Weapon(String name, int cost, Rarity rare, int durability, int damage, float criticalStrikeProb, float criticalFailureProb) {
-        super(name, cost, rare, durability);
+    public Weapon(String name, int cost, Rarity rare, int durability, int damage, float criticalStrikeProb, float criticalFailureProb, String pathToAsset) {
+        super(name, cost, rare, durability, pathToAsset);
         this.damage = damage;
         this.criticalStrikeProb = criticalStrikeProb;
         this.criticalFailureProb = criticalFailureProb;

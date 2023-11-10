@@ -25,10 +25,11 @@ public class Room {
         this.RELATIVEHEIGHT = Gdx.graphics.getWidth() / height;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+                this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, false, "ground.png"));
                 if(i == 2 && j == 1) {
                     this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, false, "chest_1.png"));
                 }
-                this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, false, "ground.png"));
+
                 if (i == 3 && j == height - 1) {
                     this.tiles.add(new Tile(RELATIVEWIDTH * i, RELATIVEHEIGHT * j, true, "fence.png"));
                 }

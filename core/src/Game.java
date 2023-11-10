@@ -1,4 +1,4 @@
-import com.mygdx.Character.Player;
+import com.mygdx.character.Player;
 
 import java.util.List;
 import java.util.Map;

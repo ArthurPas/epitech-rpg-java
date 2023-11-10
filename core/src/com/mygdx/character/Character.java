@@ -1,4 +1,4 @@
-package com.mygdx.Character;
+package com.mygdx.character;
 
 import com.mygdx.item.Weapon;
 

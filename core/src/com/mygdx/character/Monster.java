@@ -1,6 +1,5 @@
-package com.mygdx.Character;
+package com.mygdx.character;
 
-import com.mygdx.Character.Character;
 import com.mygdx.item.Item;
 import com.mygdx.item.Weapon;
 

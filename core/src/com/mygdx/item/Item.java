@@ -7,11 +7,22 @@ public abstract class Item {
 
     private int durability;
 
-    public Item(String name, int cost, Rarity rare, int durability){
+    private String pathToAsset;
+
+    public Item(String name, int cost, Rarity rare, int durability, String pathToAsset){
         this.name = name;
         this.cost = cost;
         this.rare = rare;
         this.durability = durability;
+        this.pathToAsset = pathToAsset;
+    }
+
+    public String getPathToAsset() {
+        return pathToAsset;
+    }
+
+    public void setPathToAsset(String pathToAsset) {
+        this.pathToAsset = pathToAsset;
     }
 
     public String getName() {
