@@ -1,16 +1,14 @@
 package com.mygdx.character;
 
 import com.mygdx.game.Game;
-import com.mygdx.game.Room;
+import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Player extends Character {
     private int xpLevel;

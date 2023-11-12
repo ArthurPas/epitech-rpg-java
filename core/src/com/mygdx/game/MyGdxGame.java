@@ -3,29 +3,26 @@ package com.mygdx.game;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.character.Character;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
+import com.mygdx.game.room.Room;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
-import java.util.HashMap;import com.mygdx.character.Player;
+import java.util.HashMap;
+
 import com.mygdx.item.Item;
-import com.mygdx.item.Rarity;
-import com.mygdx.item.Weapon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
     SpriteBatch batch;
-    Map<Tile, Sprite> textures;
+    List<Tile> tileList;
     Room firstRoom;
     Animation<TextureRegion> animation;
     float elapsed;
@@ -63,7 +60,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player.setPosition(firstRoom.getTiles().get(0));
 //        monster.setPosition(firstRoom.getRandomTile());
         monster.setPosition(firstRoom.getTiles().get(3));
-        textures = firstRoom.createMap();
+        tileList = firstRoom.getTiles();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
@@ -86,8 +83,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 
     public void drawFloor() {
-        for (Tile tile : textures.keySet()) {
-            Sprite sprite = textures.get(tile);
+        for (Tile tile : tileList) {
+            Sprite sprite = new Sprite(new Texture(tile.getPathToAsset()));
             sprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
@@ -99,6 +96,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void render() {
         batch.begin();
         drawFloor();
+
         Sprite heroSprite = new Sprite(new Texture("character/hero.png"));
         Sprite monsterSprite = new Sprite(new Texture("character/monsters/goblin_9.png"));
         if (!player.isInFight()) {
@@ -152,21 +150,18 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             System.out.println("You win");
         }
 
-        List<Weapon> weapons = new ArrayList<>();
-        weapons.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
-        weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
-        List<Item> stuff = new ArrayList<>();
-        stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
-        player.setInventory(stuff);
-
-        ChestInterface test = new ChestInterface(weapons,player,batch,2);
-//        for(Sprite sprite :test.displayChestInterface()){
-//                sprite.draw(batch);
-//                System.out.println(sprite.getX());
-//            }
-        for(Sprite sprite : test.displayChestInterface()){
-            sprite.draw(batch);
-        }
+//        List<Weapon> weapons = new ArrayList<>();
+//        weapons.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
+//        weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
+//        List<Item> stuff = new ArrayList<>();
+//        stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
+//        player.setInventory(stuff);
+//
+//        ChestInterface test = new ChestInterface(weapons,player,batch,2);
+//
+//        for(Sprite sprite : test.displayChestInterface()){
+//            sprite.draw(batch);
+//        }
         batch.end();
     }
 

@@ -1,6 +1,6 @@
 package com.mygdx.game;
 
-import com.mygdx.utils.UtilsFunc;
+import com.mygdx.game.room.Room;
 
 import java.util.Objects;
 
@@ -10,6 +10,16 @@ public class Tile {
     private int y;
     private boolean isDoor;
     private String pathToAsset;
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "x=" + x +
+                ", y=" + y +
+                ", isDoor=" + isDoor +
+                ", pathToAsset='" + pathToAsset + '\'' +
+                '}';
+    }
 
     public Tile(int x, int y, boolean isDoor, String pathToAsset) {
         Tile.id = id+1;
