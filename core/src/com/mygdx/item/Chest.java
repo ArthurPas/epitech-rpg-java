@@ -14,6 +14,13 @@ public class Chest {
         this.moneyAvailable = moneyAvailable;
     }
 
+    @Override
+    public String toString() {
+        return "Chest{" +
+                "items=" + items +
+                '}';
+    }
+
     public List<Item> getItems() {
         return items;
     }

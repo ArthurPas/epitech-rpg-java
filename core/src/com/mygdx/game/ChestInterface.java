@@ -5,15 +5,28 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.character.Player;
 import com.mygdx.item.Item;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ChestInterface {
     OrthographicCamera camera;
+
+    @Override
+    public String toString() {
+        return "ChestInterface{" +
+                "weaponToBuy=" + weaponToBuy +
+                ", weaponNb=" + weaponNb +
+                '}';
+    }
+
     SpriteBatch batch;
     Sprite chestSprite;
 
@@ -26,8 +39,13 @@ public class ChestInterface {
     int pageWidth;
     int pageHeight;
     List<Weapon> weaponToBuy;
+
+    List<Weapon> weaponToSell;
     Player player;
     int weaponNb;
+    List <Sprite> spritesBuy = new CopyOnWriteArrayList<>();
+    List <Sprite> spritesSell= new CopyOnWriteArrayList<>();
+    Map< Sprite,Item> linkItemsSprite  = new HashMap<>();
 
     public ChestInterface(List<Weapon> weaponToBuy, Player player, SpriteBatch batch, int weaponNb ){
         this.weaponToBuy = weaponToBuy;
@@ -72,6 +90,8 @@ public class ChestInterface {
             itemSprite.setPosition(startX + (index%(nbSpriteChestX / 2))* spriteWidthChest + spriteWidthChest / 4, startY + index+2 * spriteHeightChest + spriteHeightChest / 4);
             itemSprite.setSize(spriteWidthChest / 1.5f, spriteHeightChest / 1.5f);
             displayItems.add(itemSprite);
+            spritesSell.add(itemSprite);
+            linkItemsSprite.put(itemSprite, item);
             index++;
         }
         index = 0;
@@ -81,6 +101,8 @@ public class ChestInterface {
             itemSprite.setPosition(startX + ((index%nbSpriteChestX)+2)* spriteWidthChest + spriteWidthChest / 4, startY + index+2 * spriteHeightChest + spriteHeightChest / 4);
             itemSprite.setSize(spriteWidthChest / 1.5f, spriteHeightChest / 1.5f);
             displayItems.add(itemSprite);
+            spritesBuy.add(itemSprite);
+            linkItemsSprite.put(itemSprite, item);
             index++;
         }
 //        for (int i = 0;i<displayItems.size();i++) {
@@ -101,11 +123,6 @@ public class ChestInterface {
         buyButton.setPosition( (startX + spriteWidthChest )  - spriteWidthChest / 2  , startY + buyButton.getHeight() );
         displayItems.add(buyButton);
         buyButton.draw(batch);
-        Sprite test = new Sprite(new Texture("nem.jpg"));
-
-        test.setSize(spriteWidthChest ,  spriteHeightChest /3f );
-        test.setPosition((startX + spriteWidthChest )  - spriteWidthChest / 2  , startY + buyButton.getHeight() );
-//        test.draw(batch);
         sellButton.setSize(  spriteWidthChest ,  spriteHeightChest /3f );
         sellButton.setPosition((startX +  3 * spriteWidthChest )  - spriteWidthChest / 2  , startY + buyButton.getHeight() );
         sellButton.setPosition((startX + spriteWidthChest )  - spriteWidthChest / 2 +300, startY + buyButton.getHeight() );
@@ -115,7 +132,58 @@ public class ChestInterface {
 //        shapeRenderer.setColor(1, 1, 1, 1);
 //        shapeRenderer.line( startX + 2* spriteWidthChest, startY + buyButton.getHeight() * 2, startX + 2 * spriteWidthChest, startY + nbSpriteChestY * spriteHeightChest);
 //        shapeRenderer.end();
-        System.out.println(displayItems.size());
+
         return displayItems;
+
     }
+    public boolean isIn(int x, int y,int mouseX, int mouseY, int width, int height){
+        return  mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+    };
+    public void handleClick(int mouseX, int mouseY){
+        Vector3 worldCoordinates = camera.unproject(new Vector3(mouseX, mouseY, 0));
+        int mouseXWorld = (int) worldCoordinates.x;
+        int mouseYWorld = (int) worldCoordinates.y;
+
+
+        for (Sprite sprite: spritesBuy) {
+            if (isIn((int) sprite.getX(), (int) sprite.getY(), mouseXWorld, mouseYWorld, (int) sprite.getWidth(), (int) sprite.getHeight())) {
+                System.out.println("you clicked on weapons to buy");
+                spritesSell.add(sprite);
+                spritesBuy.remove(sprite);
+                System.out.println(spritesBuy);
+                System.out.println( "current account"+ player.getMoney());
+                player.pay(linkItemsSprite.get(sprite).getCost());
+                System.out.println("player bought a weapon he has : " + player.getMoney() +" coins.");
+                player.addItem(linkItemsSprite.get(sprite));
+
+            }
+        }
+        for (Sprite sprite: spritesSell) {
+            if (isIn((int) sprite.getX(), (int) sprite.getY(), mouseXWorld, mouseYWorld, (int) sprite.getWidth(), (int) sprite.getHeight())) {
+                System.out.println("sprite to sell : " + spritesSell);
+                System.out.println("you clicked on weapons to sell");
+                System.out.println("player has : " + player.getMoney() +" coins.");
+                spritesBuy.add(sprite);
+                spritesSell.remove(sprite);
+                player.addMoney(linkItemsSprite.get(sprite).getCost());
+                System.out.println("player has now :" + player.getMoney() + " coins");
+                player.removeItem(linkItemsSprite.get(sprite));
+            }
+        }
+
+        if(isIn((int) buyButton.getX(), (int) buyButton.getY(),mouseXWorld, mouseYWorld, (int) buyButton.getWidth(), (int) buyButton.getHeight())){
+            System.out.println("you clicked on buyButton");
+
+        }
+        else if(isIn((int)sellButton.getX(),(int)sellButton.getY(),mouseXWorld,mouseYWorld,(int)sellButton.getWidth(),(int)sellButton.getHeight())){
+            System.out.println("you clicked on sellButton");
+
+
+        }
+
+
+    }
+
+
+
 }

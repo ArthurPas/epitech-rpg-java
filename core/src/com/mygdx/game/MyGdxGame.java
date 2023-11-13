@@ -32,6 +32,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Player player;
     Monster monster;
     Game game;
+    ChestInterface testChestInterface;
 
     float timeSeconds = 0f;
     float period = 2f;
@@ -50,6 +51,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         font  = new BitmapFont();
 
 
+
         List<Room> rooms = new ArrayList<>();
         Map<Stat, Integer> stat = new HashMap<>();
         stat.put(Stat.HP, 200);
@@ -62,12 +64,13 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         firstRoom = game.getRooms().get(0);
         player.setPosition(firstRoom.getTiles().get(0));
 //        monster.setPosition(firstRoom.getRandomTile());
-        monster.setPosition(firstRoom.getTiles().get(3));
+        monster.setPosition(firstRoom.getTiles().get(57));
         textures = firstRoom.createMap();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(firstRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
+                testChestInterface.handleClick(x,y);
                 return true;
             }
         });
@@ -152,19 +155,20 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             System.out.println("You win");
         }
 
-        List<Weapon> weapons = new ArrayList<>();
-        weapons.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
-        weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
-        List<Item> stuff = new ArrayList<>();
-        stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
-        player.setInventory(stuff);
+        List<Weapon> weaponsToSell = new ArrayList<>();
+        weaponsToSell.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
+        weaponsToSell.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
+        weaponsToSell.add(new Weapon("test3",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword25.png"));
+        List<Item> weaponsToBuy = new ArrayList<>();
+        weaponsToBuy.add(new Weapon("myWeapon1",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
+        weaponsToBuy.add(new Weapon("myWeapon2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
 
-        ChestInterface test = new ChestInterface(weapons,player,batch,2);
-//        for(Sprite sprite :test.displayChestInterface()){
-//                sprite.draw(batch);
-//                System.out.println(sprite.getX());
-//            }
-        for(Sprite sprite : test.displayChestInterface()){
+        player.setInventory(weaponsToBuy);
+        testChestInterface = new ChestInterface(weaponsToSell,player,batch,2);
+
+
+
+        for(Sprite sprite : testChestInterface.displayChestInterface()){
             sprite.draw(batch);
         }
         batch.end();
