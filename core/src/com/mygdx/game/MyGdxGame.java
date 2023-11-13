@@ -57,14 +57,17 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player = new Player(0, null, 10, null);
         game = new Game(rooms, player, 1);
         firstRoom = game.getRooms().get(0);
-        player.setPosition(firstRoom.getTiles().get(0));
+
+        player.setPosition(firstRoom.getEntry());
+        firstRoom.displayRandomPath(firstRoom.getEntry(), firstRoom.getExitTile(),1);
 //        monster.setPosition(firstRoom.getRandomTile());
-        monster.setPosition(firstRoom.getTiles().get(3));
+        monster.setPosition(firstRoom.getTiles().get(33));
         tileList = firstRoom.getTiles();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(firstRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
+
                 return true;
             }
         });

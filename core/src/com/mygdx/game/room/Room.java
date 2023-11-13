@@ -1,16 +1,13 @@
 package com.mygdx.game.room;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.character.Monster;
 import com.mygdx.game.Tile;
 import com.mygdx.game.TileDisplay;
+import com.mygdx.utils.PathFinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Room {
     private int width;
@@ -23,15 +20,9 @@ public class Room {
 
     private Tile chestTile;
 
-    private Tile exitTile;
-
 
     public Tile getExitTile() {
-        return exitTile;
-    }
-
-    public void setExitTile(Tile exitTile) {
-        this.exitTile = exitTile;
+        return tiles.get(tiles.size() - height - 2);
     }
 
     public Room(int width, int height, Monster monster) {
@@ -42,7 +33,6 @@ public class Room {
         this.relativeHeight = Gdx.graphics.getWidth() / height;
         this.tiles = createMap(1, width, height);
         this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
-        this.exitTile = tiles.get(tiles.size() - height - 2);
     }
 
     public Monster getMonster() {
@@ -60,7 +50,6 @@ public class Room {
         } else {
             //Good luck for explain this : 23:30
             indexMidle = (((width * height) / 2) + (height % ((height / 2) + 1)) - (height / 2));
-            System.out.println(indexMidle);
             fightTiles.add(tiles.get(indexMidle + 1));
             fightTiles.add(tiles.get(indexMidle));
             fightTiles.add(tiles.get(indexMidle - 1));
@@ -126,25 +115,23 @@ public class Room {
         }
         return null;
     }
+    public Tile getEntry(){
+        return tiles.get(height+1);
+    }
 
-    public List<Tile> createMap(int mapLevel, int width, int height) {
+    public List<Tile> createMap(int roomLevel, int width, int height) {
         List<Tile> tiles = new ArrayList<>();
         TileDisplay border = new TileDisplay(true, false, TextureType.INSIDE);
-        TileDisplay ground = new TileDisplay(false, true, TextureType.INSIDE);
         TileDisplay wall = new TileDisplay(false, false, TextureType.INSIDE);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if ((i == 0) || (j % height == 0) || (j % width == width-1 )|| (i % height == height-1)) {
-                    tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, border.getTexturePath()));
+                    tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, border));
                 } else {
-                    tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, ground.getTexturePath()));
+                    tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, wall));
                 }
             }
         }
-//        List<Tile> path = randomPath(tiles.get(3), tiles.get(25));
-//        for (Tile tile : path) {
-//            tile.setPathToAsset(wall.getTexturePath());
-//        }
         return tiles;
 //        Map<Tile, Sprite> map = new HashMap<>();
 //        for (Tile tile : tiles) {
@@ -154,18 +141,26 @@ public class Room {
 //        System.out.println(map.size());
     }
 
-    public List<Tile> randomPath(Tile begin, Tile end) {
-        List<Tile> path = new ArrayList<>();
-        Tile current = begin;
-        path.add(current);
-        while (current != end) {
-            List<Tile> neighbors = getNeighbors(current, 1);
-            current = neighbors.get((int) (Math.random() * neighbors.size()));
-            if(!path.contains(current)){
-                path.add(current);
-            }
+    public void displayRandomPath(Tile begin, Tile end, int roomLevel ) {
+//        TODO : room level management change texture*
+//        TileDisplay ground = new TileDisplay(false, true, TextureType.CHILL_OUTSIDE);
+//        List<Tile> path = new ArrayList<>();
+//        Tile current = begin;
+//        path.add(current);
+//        while (current != end) {
+//            List<Tile> neighbors = getNeighbors(current, 1);
+//            current = neighbors.get((int) (Math.random() * neighbors.size()));
+////            current = neighbors.get(1);
+//            if(!path.contains(current) && (!current.getTileDisplay().isBorder())){
+//                path.add(current);
+//                current.setTileDisplay(ground);
+//            }
+//        }
+        List<Tile> path = PathFinding.findAPath(this, begin, end);
+        for (Tile tile : path) {
+            tile.setTileDisplay(new TileDisplay(false, true, TextureType.INSIDE));
+
         }
-        return path;
     }
 
     public List<Tile> getTiles() {

@@ -55,7 +55,7 @@ public class Player extends Character {
     @Override
     public void move(Room room, Tile actualPosition, int xMouse, int yMouse) {
         Tile tileClicked = room.getSpecificTile(xMouse, yMouse);
-        if (actualPosition.isNeighbor(room, tileClicked)) {
+        if (actualPosition.isNeighbor(room, tileClicked) && tileClicked.getTileDisplay().isWalkable()) {
             setPosition(tileClicked);
         }
     }
