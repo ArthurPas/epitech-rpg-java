@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
+import com.mygdx.game.room.Room;
 
 import java.util.HashMap;
 import java.util.List;

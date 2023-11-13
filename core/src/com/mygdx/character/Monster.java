@@ -1,6 +1,6 @@
 package com.mygdx.character;
 
-import com.mygdx.game.Room;
+import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Item;
 import com.mygdx.item.Weapon;

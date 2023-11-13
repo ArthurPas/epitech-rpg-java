@@ -1,6 +1,6 @@
 package com.mygdx.game;
 
-import com.mygdx.utils.UtilsFunc;
+import com.mygdx.game.room.Room;
 
 import java.util.Objects;
 
@@ -9,14 +9,27 @@ public class Tile {
     private int x;
     private int y;
     private boolean isDoor;
-    private String pathToAsset;
 
-    public Tile(int x, int y, boolean isDoor, String pathToAsset) {
+    private TileDisplay tileDisplay;
+
+
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "x=" + x +
+                ", y=" + y +
+                ", isDoor=" + isDoor +
+                ", tileDisplay='" + tileDisplay + '\'' +
+                '}';
+    }
+
+    public Tile(int x, int y, boolean isDoor, TileDisplay tileDisplay) {
         Tile.id = id+1;
         this.x = x;
         this.y = y;
         this.isDoor = isDoor;
-        this.pathToAsset = pathToAsset;
+        this.tileDisplay = tileDisplay;
     }
 
 
@@ -53,13 +66,13 @@ public class Tile {
     }
 
     public String getPathToAsset() {
-        return pathToAsset;
+        return tileDisplay.getTexturePath();
     }
     public boolean isNeighbor(Room room, Tile otherTile){
-        return (this.x == otherTile.getX() && this.y == otherTile.getY() + room.getRelativeHeight()) ||
+        return (((this.x == otherTile.getX() && this.y == otherTile.getY() + room.getRelativeHeight()) ||
                 (this.x == otherTile.getX() && this.y == otherTile.getY() - room.getRelativeHeight()) ||
                 (this.y == otherTile.getY() && this.x == otherTile.getX() + room.getRelativeWidth() ) ||
-                (this.y == otherTile.getY() && this.x == otherTile.getX() - room.getRelativeWidth());
+                (this.y == otherTile.getY() && this.x == otherTile.getX() - room.getRelativeWidth())) && !otherTile.getTileDisplay().isBorder()) ;
     }
 
     public boolean isInTile(Room room, int x, int y){
@@ -78,9 +91,11 @@ public class Tile {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+    public TileDisplay getTileDisplay() {
+        return tileDisplay;
+    }
 
-
-    public void setPathToAsset(String pathToAsset) {
-        this.pathToAsset = pathToAsset;
+    public void setTileDisplay(TileDisplay tileDisplay) {
+        this.tileDisplay = tileDisplay;
     }
 }
