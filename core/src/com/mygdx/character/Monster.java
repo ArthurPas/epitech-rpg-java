@@ -16,6 +16,7 @@ public class Monster extends Character {
         super(name, stat, weaponEquiped, position);
         this.dropWeaponProb = dropWeaponProb;
         this.vivacity = vivacity;
+        setPathToAsset("character/monsters/death_1.png");
     }
     public void move(Room room, Tile position) {
         List<Tile> neighbors = room.getNeighbors(position,1);
