@@ -61,7 +61,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player.setPosition(firstRoom.getEntry());
         firstRoom.displayRandomPath(firstRoom.getEntry(), firstRoom.getExitTile(),1);
 //        monster.setPosition(firstRoom.getRandomTile());
-        monster.setPosition(firstRoom.getTiles().get(33));
+        monster.setPosition(firstRoom.getTiles().get(98));
         tileList = firstRoom.getTiles();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
@@ -100,7 +100,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         batch.begin();
         drawFloor();
 
-        Sprite heroSprite = new Sprite(new Texture("character/hero.png"));
+        Sprite heroSprite = new Sprite(new Texture(player.getPathToAsset()));
         Sprite monsterSprite = new Sprite(new Texture("character/monsters/goblin_9.png"));
         if (!player.isInFight()) {
 
