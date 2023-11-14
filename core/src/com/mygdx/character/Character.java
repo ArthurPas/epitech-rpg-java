@@ -32,6 +32,10 @@ public class Character {
         isInFight = inFight;
     }
 
+    public boolean isDead(){
+        return this.getStat().get(Stat.HP) <= 0;
+    }
+
     private boolean isInFight;
 
     public Tile getPosition() {
@@ -89,9 +93,6 @@ public class Character {
         this.stat.put(stat, this.stat.get(stat) + value);
     }
 
-    public void move(Room room, Tile position, int x, int y) {
-        setPosition(position);
-    }
 
 
 

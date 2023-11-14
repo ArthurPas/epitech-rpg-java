@@ -8,6 +8,7 @@ import com.mygdx.utils.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Room {
     private int width;
@@ -15,6 +16,8 @@ public class Room {
     private List<Tile> tiles;
     private int relativeWidth;
     private int relativeHeight;
+    private boolean isDoorOpen;
+
 
     private Monster monster;
 
@@ -66,12 +69,21 @@ public class Room {
     }
 
     public List<Tile> getNeighbors(Tile originTile, int range) {
-        List<Tile> neighbors = new ArrayList<>();
+        List<Tile> neighbors = new CopyOnWriteArrayList<>();
         for (Tile tile : tiles) {
             if (originTile.isNeighbor(this, tile)) {
                 neighbors.add(tile);
             }
         }
+        return neighbors;
+    }
+
+    public List<Tile> getNeighborsWalkable(Tile originTile, int range) {
+        List<Tile> neighbors = getNeighbors(originTile, range);
+        for (Tile tile : neighbors) {
+            if (!tile.getTileDisplay().isWalkable())
+                neighbors.remove(tile);
+            }
         return neighbors;
     }
 
@@ -143,19 +155,6 @@ public class Room {
 
     public void displayRandomPath(Tile begin, Tile end, int roomLevel ) {
 //        TODO : room level management change texture*
-//        TileDisplay ground = new TileDisplay(false, true, TextureType.CHILL_OUTSIDE);
-//        List<Tile> path = new ArrayList<>();
-//        Tile current = begin;
-//        path.add(current);
-//        while (current != end) {
-//            List<Tile> neighbors = getNeighbors(current, 1);
-//            current = neighbors.get((int) (Math.random() * neighbors.size()));
-////            current = neighbors.get(1);
-//            if(!path.contains(current) && (!current.getTileDisplay().isBorder())){
-//                path.add(current);
-//                current.setTileDisplay(ground);
-//            }
-//        }
         List<Tile> path = PathFinding.findAPath(this, begin, end);
         for (Tile tile : path) {
             tile.setTileDisplay(new TileDisplay(false, true, TextureType.INSIDE));
@@ -163,6 +162,13 @@ public class Room {
         }
     }
 
+    public boolean isDoorOpen() {
+        return isDoorOpen;
+    }
+
+    public void setDoorOpen() {
+        isDoorOpen = true;
+    }
     public List<Tile> getTiles() {
         return tiles;
     }

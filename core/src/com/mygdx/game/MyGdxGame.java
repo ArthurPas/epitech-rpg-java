@@ -23,7 +23,7 @@ import java.util.Map;
 public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
     SpriteBatch batch;
     List<Tile> tileList;
-    Room firstRoom;
+    Room actualRoom;
     Animation<TextureRegion> animation;
     float elapsed;
     Player player;
@@ -39,34 +39,25 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     BitmapFont font;
 
     int dammageDeal;
+    Sprite heroSprite;
+    Sprite monsterSprite;
 
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        font  = new BitmapFont();
-
-
-        List<Room> rooms = new ArrayList<>();
-        Map<Stat, Integer> stat = new HashMap<>();
-        stat.put(Stat.HP, 200);
-        stat.put(Stat.STRENGTH, 1);
-        stat.put(Stat.AGILITY, 10);
-        monster = new Monster("Wolf", stat, new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0,"item/weapon/sword22.png"), null, 0, 0.7f);
-        rooms.add(new Room(10, 10, monster));
-        player = new Player(0, null, 10, null);
-        game = new Game(rooms, player, 1);
-        firstRoom = game.getRooms().get(0);
-
-        player.setPosition(firstRoom.getEntry());
-        firstRoom.displayRandomPath(firstRoom.getEntry(), firstRoom.getExitTile(),1);
-//        monster.setPosition(firstRoom.getRandomTile());
-        monster.setPosition(firstRoom.getTiles().get(98));
-        tileList = firstRoom.getTiles();
+        font = new BitmapFont();
+        heroSprite = new Sprite(new Texture("character/hero.png"));
+        game = new Game(4);
+        actualRoom = game.getRooms().get(0);
+        monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+        game.play(actualRoom);
+        player = game.getPlayer();
+        monster = actualRoom.getMonster();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
-                player.move(firstRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
+                player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
 
                 return true;
             }
@@ -74,8 +65,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
-                               if (!player.isInFight()) {
-                                   monster.move(firstRoom, monster.getPosition());
+                               if (!player.isInFight()&& !monster.isDead()) {
+                                   monster.move(actualRoom, monster.getPosition());
                                }
                            }
                        }
@@ -86,9 +77,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 
     public void drawFloor() {
-        for (Tile tile : tileList) {
+        for (Tile tile : actualRoom.getTiles()) {
             Sprite sprite = new Sprite(new Texture(tile.getPathToAsset()));
-            sprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
+            sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
         }
@@ -100,57 +91,61 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         batch.begin();
         drawFloor();
 
-        Sprite heroSprite = new Sprite(new Texture(player.getPathToAsset()));
-        Sprite monsterSprite = new Sprite(new Texture("character/monsters/goblin_9.png"));
-        if (!player.isInFight()) {
+        monsterSprite.draw(batch);
+        heroSprite.draw(batch);
 
-            heroSprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
-            heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
-            heroSprite.draw(batch);
+        heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
 
-            monsterSprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
-            monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
-            monsterSprite.draw(batch);
+        monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
 
-            Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
-            chestSprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
-            chestSprite.setPosition(firstRoom.getChestTile().getX(), firstRoom.getChestTile().getY());
-            chestSprite.draw(batch);
+        Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
+        chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
+        chestSprite.draw(batch);
 
-            Sprite exitSprite = new Sprite(new Texture("fence.png"));
-            exitSprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight() / 2);
-            exitSprite.setPosition(firstRoom.getExitTile().getX(), firstRoom.getExitTile().getY() + firstRoom.getRelativeHeight() / 2);
-            exitSprite.draw(batch);
-            player.canFight(monster.getPosition().isNeighbor(firstRoom, player.getPosition()));
-        } else {
-            mooveCharacter(player, heroSprite);
-            mooveCharacter(monster,monsterSprite);
-            font.draw(batch, player.getName()+": "+String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX()+firstRoom.getRelativeHeight()/2, player.getPosition().getY()+firstRoom.getRelativeWidth()/2);
-            font.draw(batch, monster.getName()+": "+String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX(), monster.getPosition().getY()+firstRoom.getRelativeWidth()/2);
-            if(attacker){
-                player.setPosition(firstRoom.getFightsTiles().get(1));
-                monster.setPosition(firstRoom.getFightsTiles().get(2));
+        Sprite exitSprite = new Sprite(new Texture("fence.png"));
+        exitSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+        exitSprite.setPosition(actualRoom.getExitTile().getX(), actualRoom.getExitTile().getY() + actualRoom.getRelativeHeight() / 2);
+        exitSprite.draw(batch);
+        player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition())&& !monster.isDead() && !player.isDead());
 
-            }else{
-                player.setPosition(firstRoom.getFightsTiles().get(0));
-                monster.setPosition(firstRoom.getFightsTiles().get(1));
-            }
+        if (player.isInFight()) {
+            font.draw(batch, player.getName() + ": " + String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX(), player.getPosition().getY() - actualRoom.getRelativeWidth() / 2);
+            font.draw(batch, monster.getName() + ": " + String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() + actualRoom.getRelativeHeight(), monster.getPosition().getY() + actualRoom.getRelativeWidth() / 2);
             timeSeconds += Gdx.graphics.getDeltaTime();
-            if(timeSeconds > period){
-                timeSeconds-=period;
-                dammageDeal = fightRound(player,monster,attacker);
+            if (timeSeconds > period) {
+                timeSeconds -= period;
+                dammageDeal = fightRound(player, monster, attacker);
                 attacker = !attacker;
-                player.setPosition(firstRoom.getFightsTiles().get(0));
-                monster.setPosition(firstRoom.getFightsTiles().get(2));
-            }
-            //TODO loose and win management
-            if(player.getStat().get(Stat.HP) < 0 || monster.getStat().get(Stat.HP)<0){
-                player.setInFight(false);
             }
         }
+            //TODO loose and win management
+            if (monster.isDead()) {
+                monsterSprite = new Sprite(new Texture("character/death.png"));
+                monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
+                monsterSprite.setSize(actualRoom.getRelativeWidth()/2, actualRoom.getRelativeHeight()/2);
+                player.setInFight(false);
+                actualRoom.setDoorOpen();
+            }
+            if(player.isDead()){
+                heroSprite = new Sprite(new Texture("character/death.png"));
+                heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
+                heroSprite.setSize(actualRoom.getRelativeWidth()/2, actualRoom.getRelativeHeight()/2);
+                player.setInFight(false);
+            }
         if (game.isWin()) {
             //TODO : add a win screen
             System.out.println("You win");
+        }
+        if (actualRoom.isDoorOpen() && player.getPosition() == actualRoom.getExitTile()) {
+            actualRoom = game.nextRoom(actualRoom);
+            game.play(actualRoom);
+            monster = actualRoom.getMonster();
+            monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+
+            System.out.println(monster.getPathToAsset());
         }
 
 //        List<Weapon> weapons = new ArrayList<>();
@@ -169,17 +164,17 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     }
 
     public void mooveCharacter(Character character, Sprite sprite) {
-        sprite.setSize(firstRoom.getRelativeWidth(), firstRoom.getRelativeHeight());
+        sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         sprite.setPosition(character.getPosition().getX(), character.getPosition().getY());
         sprite.draw(batch);
     }
 
-    public int fightRound(Character char1, Character char2, boolean isChar1 ){
-        if(isChar1) {
+    public int fightRound(Character char1, Character char2, boolean isChar1) {
+        if (isChar1) {
             return char1.attack(char2);
 
-        }else {
-           return char2.attack(char1);
+        } else {
+            return char2.attack(char1);
         }
     }
     //.sleep not working in render
