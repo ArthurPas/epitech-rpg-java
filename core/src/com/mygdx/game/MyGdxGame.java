@@ -47,18 +47,18 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        heroSprite = new Sprite(new Texture("character/hero.png"));
         game = new Game(4);
         actualRoom = game.getRooms().get(0);
         monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
         game.play(actualRoom);
         player = game.getPlayer();
+        heroSprite = new Sprite(new Texture(player.getPathToAsset()));
         monster = actualRoom.getMonster();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
-
+                heroSprite = new Sprite(new Texture(player.getPathToAsset()));
                 return true;
             }
         });
@@ -90,7 +90,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void render() {
         batch.begin();
         drawFloor();
-
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
 
@@ -130,9 +129,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 actualRoom.setDoorOpen();
             }
             if(player.isDead()){
-                heroSprite = new Sprite(new Texture("character/death.png"));
+                heroSprite = new Sprite(new Texture("character/heroDied.png"));
                 heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
-                heroSprite.setSize(actualRoom.getRelativeWidth()/2, actualRoom.getRelativeHeight()/2);
+                heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
                 player.setInFight(false);
             }
         if (game.isWin()) {

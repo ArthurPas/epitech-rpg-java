@@ -55,13 +55,13 @@ public class Game {
             Map<Stat, Integer> stats = new HashMap<>();
 
             //TODO : implement with real monster stats depending on room and difficulty
-            stats.put(Stat.STRENGTH, 1000);
+            stats.put(Stat.STRENGTH, 10);
             stats.put(Stat.AGILITY, 10);
-            stats.put(Stat.HP, 1000);
+            stats.put(Stat.HP, 10);
 
             Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0, "item/weapon/sword22.png"), null, 0, 0.7f);
             System.out.println(Monster.indexMonster);
-            Room room = new Room(5, 5, monster);
+            Room room = new Room(10, 10, monster);
             monster.setPosition(room.getExitTile());
             rooms.add(room);
         }
