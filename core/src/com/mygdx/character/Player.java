@@ -21,6 +21,7 @@ public class Player extends Character {
         this.xpLevel = xpLevel;
         this.inventory = new ArrayList<>();
         this.money = 0;
+        setPathToAsset("character/heroFront.png");
     }
 
     public static Map<Stat,Integer> basicStat(){
@@ -64,5 +65,20 @@ public class Player extends Character {
         if (actualPosition.isNeighbor(room, tileClicked) && tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(tileClicked);
         }
+
+        if (room.getSpecificTile(xMouse,yMouse).getX() > actualPosition.getX()) {
+            System.out.println("right position");
+            setPathToAsset("character/heroRight.png");
+        }  else if (room.getSpecificTile(xMouse,yMouse).getX() < actualPosition.getX()) {
+            System.out.println("left position");
+            setPathToAsset("character/heroLeft.png");
+        } else if(room.getSpecificTile(xMouse,yMouse).getY() > actualPosition.getY()){
+            System.out.println("top position");
+            setPathToAsset("character/heroBack.png");
+        } else if(room.getSpecificTile(xMouse,yMouse).getY() < actualPosition.getY() ){
+            System.out.println("bottom position");
+            setPathToAsset("character/heroFront.png");
+        }
+
     }
 }

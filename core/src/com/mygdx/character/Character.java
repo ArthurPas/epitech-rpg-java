@@ -10,6 +10,8 @@ public class Character {
     private String name;
     private Map<Stat, Integer> stat;
 
+    private String pathToAsset;
+
     public void setStat(Map<Stat, Integer> stat) {
         this.stat = stat;
     }
@@ -49,6 +51,15 @@ public class Character {
         this.stat = stat;
         this.weaponEquiped = weaponEquiped;
         this.position = position;
+
+    }
+
+    public String getPathToAsset() {
+        return pathToAsset;
+    }
+
+    public void setPathToAsset(String pathToAsset) {
+        this.pathToAsset = pathToAsset;
     }
 
     public String getName() {
@@ -81,6 +92,8 @@ public class Character {
     public void changeStat(Stat stat, int value) {
         this.stat.put(stat, this.stat.get(stat) + value);
     }
+
+
 
 
     //TODO : add an miss by luck exception for pretty print
