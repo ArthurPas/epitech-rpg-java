@@ -1,6 +1,6 @@
 package com.mygdx.character;
 
-import com.mygdx.game.Room;
+import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Weapon;
 
@@ -9,6 +9,8 @@ import java.util.Map;
 public class Character {
     private String name;
     private Map<Stat, Integer> stat;
+
+    private String pathToAsset;
 
     public void setStat(Map<Stat, Integer> stat) {
         this.stat = stat;
@@ -30,6 +32,10 @@ public class Character {
         isInFight = inFight;
     }
 
+    public boolean isDead(){
+        return this.getStat().get(Stat.HP) <= 0;
+    }
+
     private boolean isInFight;
 
     public Tile getPosition() {
@@ -45,6 +51,15 @@ public class Character {
         this.stat = stat;
         this.weaponEquiped = weaponEquiped;
         this.position = position;
+
+    }
+
+    public String getPathToAsset() {
+        return pathToAsset;
+    }
+
+    public void setPathToAsset(String pathToAsset) {
+        this.pathToAsset = pathToAsset;
     }
 
     public String getName() {
@@ -78,9 +93,21 @@ public class Character {
         this.stat.put(stat, this.stat.get(stat) + value);
     }
 
-    public void move(Room room, Tile position, int x, int y) {
-        setPosition(position);
+
+    public int calculateLifeDividedBy4() {
+        if(this.getStat().get(Stat.HP) <= 0){
+            return 0;
+        }else if (this.getStat().get(Stat.HP) <= 25) {
+            return 1;
+        } else if (this.getStat().get(Stat.HP) <= 50) {
+            return 2;
+        } else if (this.getStat().get(Stat.HP) <= 75) {
+            return 3;
+        } else {
+            return 4;
+        }
     }
+
 
     //TODO : add an miss by luck exception for pretty print
     public int attack(Character character) {
