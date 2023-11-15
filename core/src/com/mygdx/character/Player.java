@@ -28,7 +28,7 @@ public class Player extends Character {
         Map<Stat,Integer> stats = new HashMap<>();
         stats.put(Stat.STRENGTH,1);
         stats.put(Stat.AGILITY,20);
-        stats.put(Stat.HP,20);
+        stats.put(Stat.HP,100);
         return stats;
     }
 
