@@ -1,5 +1,7 @@
 package com.mygdx.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.Game;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
@@ -60,4 +62,15 @@ public class Monster extends Character {
     public void setPathToAsset(String pathToAsset) {
         this.pathToAsset = pathToAsset;
     }
+
+
+
+    @Override
+    public int attack(Character character) {
+         Sound monsterAttack = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroHurt.wav"));
+            monsterAttack.play(1.0f);
+        return super.attack(character);
+    }
 }
+
+
