@@ -165,7 +165,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 
         for(Sprite sprite : testChestInterface.displayChestInterface()){
-            sprite.draw(batch)
+//            sprite.draw(batch);
         }
 
 //        List<Weapon> weapons = new ArrayList<>();

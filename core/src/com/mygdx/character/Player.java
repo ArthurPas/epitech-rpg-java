@@ -7,7 +7,9 @@ import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Player extends Character {
     private int xpLevel;
