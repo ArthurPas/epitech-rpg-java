@@ -111,8 +111,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition())&& !monster.isDead() && !player.isDead());
 
         if (player.isInFight()) {
-            font.draw(batch, player.getName() + ": " + String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX(), player.getPosition().getY() - actualRoom.getRelativeWidth() / 2);
-            font.draw(batch, monster.getName() + ": " + String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() + actualRoom.getRelativeHeight(), monster.getPosition().getY() + actualRoom.getRelativeWidth() / 2);
+            Sprite heroLifeBar = new Sprite(new Texture("character/blueBar"+player.calculateLifeDividedBy4()+".png"));
+            Sprite monsterLifeBar = new Sprite(new Texture("character/redBar"+monster.calculateLifeDividedBy4()+".png"));
+            heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() +actualRoom.getRelativeWidth());
+            monsterLifeBar.setPosition(monster.getPosition().getX(), monster.getPosition().getY() + actualRoom.getRelativeWidth());
+            heroLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            monsterLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            heroLifeBar.draw(batch);
+            monsterLifeBar.draw(batch);
             timeSeconds += Gdx.graphics.getDeltaTime();
             if (timeSeconds > period) {
                 timeSeconds -= period;

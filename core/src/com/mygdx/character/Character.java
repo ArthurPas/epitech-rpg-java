@@ -94,6 +94,19 @@ public class Character {
     }
 
 
+    public int calculateLifeDividedBy4() {
+        if(this.getStat().get(Stat.HP) <= 0){
+            return 0;
+        }else if (this.getStat().get(Stat.HP) <= 25) {
+            return 1;
+        } else if (this.getStat().get(Stat.HP) <= 50) {
+            return 2;
+        } else if (this.getStat().get(Stat.HP) <= 75) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
 
 
     //TODO : add an miss by luck exception for pretty print
