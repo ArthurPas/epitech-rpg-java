@@ -7,9 +7,7 @@ import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Player extends Character {
     private int xpLevel;
@@ -81,4 +79,18 @@ public class Player extends Character {
         }
 
     }
+
+    public void addMoney(int money){
+        setMoney(getMoney() + money);
+    };
+    public void pay(int money){
+        setMoney(getMoney() - money);
+    }
+    public void removeItem(Item item){
+        inventory.remove(item);
+    }
+    public void addItem(Item item){
+        inventory.add(item);
+    }
+
 }

@@ -29,6 +29,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Player player;
     Monster monster;
     Game game;
+    ChestInterface testChestInterface;
 
     float timeSeconds = 0f;
     float period = 2f;
@@ -149,8 +150,22 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             game.play(actualRoom);
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+        }
+        List<Weapon> weaponsToSell = new ArrayList<>();
+        weaponsToSell.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
+        weaponsToSell.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
+        weaponsToSell.add(new Weapon("test3",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword25.png"));
+        List<Item> weaponsToBuy = new ArrayList<>();
+        weaponsToBuy.add(new Weapon("myWeapon1",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
+        weaponsToBuy.add(new Weapon("myWeapon2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
 
-            System.out.println(monster.getPathToAsset());
+        player.setInventory(weaponsToBuy);
+        testChestInterface = new ChestInterface(weaponsToSell,player,batch,2);
+
+
+
+        for(Sprite sprite : testChestInterface.displayChestInterface()){
+            sprite.draw(batch)
         }
 
 //        List<Weapon> weapons = new ArrayList<>();
