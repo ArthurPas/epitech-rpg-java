@@ -29,6 +29,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Player player;
     Monster monster;
     Game game;
+    ChestInterface testChestInterface;
 
     float timeSeconds = 0f;
     float period = 2f;
@@ -111,8 +112,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition())&& !monster.isDead() && !player.isDead());
 
         if (player.isInFight()) {
-            font.draw(batch, player.getName() + ": " + String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX(), player.getPosition().getY() - actualRoom.getRelativeWidth() / 2);
-            font.draw(batch, monster.getName() + ": " + String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() + actualRoom.getRelativeHeight(), monster.getPosition().getY() + actualRoom.getRelativeWidth() / 2);
+            Sprite heroLifeBar = new Sprite(new Texture("character/blueBar"+player.calculateLifeDividedBy4()+".png"));
+            Sprite monsterLifeBar = new Sprite(new Texture("character/redBar"+monster.calculateLifeDividedBy4()+".png"));
+            heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() +actualRoom.getRelativeWidth());
+            monsterLifeBar.setPosition(monster.getPosition().getX(), monster.getPosition().getY() + actualRoom.getRelativeWidth());
+            heroLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            monsterLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            heroLifeBar.draw(batch);
+            monsterLifeBar.draw(batch);
             timeSeconds += Gdx.graphics.getDeltaTime();
             if (timeSeconds > period) {
                 timeSeconds -= period;
@@ -143,8 +150,22 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             game.play(actualRoom);
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+        }
+        List<Weapon> weaponsToSell = new ArrayList<>();
+        weaponsToSell.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
+        weaponsToSell.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
+        weaponsToSell.add(new Weapon("test3",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword25.png"));
+        List<Item> weaponsToBuy = new ArrayList<>();
+        weaponsToBuy.add(new Weapon("myWeapon1",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
+        weaponsToBuy.add(new Weapon("myWeapon2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
 
-            System.out.println(monster.getPathToAsset());
+        player.setInventory(weaponsToBuy);
+        testChestInterface = new ChestInterface(weaponsToSell,player,batch,2);
+
+
+
+        for(Sprite sprite : testChestInterface.displayChestInterface()){
+//            sprite.draw(batch);
         }
 
 //        List<Weapon> weapons = new ArrayList<>();

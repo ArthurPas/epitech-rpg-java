@@ -5,6 +5,16 @@ import com.mygdx.item.Item;
 public class Weapon  extends Item {
     private int damage;
     private float criticalStrikeProb;
+
+    @Override
+    public String toString() {
+        return "Weapon{" +
+                "damage=" + damage +
+                ", criticalStrikeProb=" + criticalStrikeProb +
+                ", criticalFailureProb=" + criticalFailureProb +
+                '}';
+    }
+
     private float criticalFailureProb;
 
     public Weapon(String name, int cost, Rarity rare, int durability, int damage, float criticalStrikeProb, float criticalFailureProb, String pathToAsset) {

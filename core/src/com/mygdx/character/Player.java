@@ -87,14 +87,22 @@ public class Player extends Character {
         }
 
     }
-
     @Override
     public int attack(Character character) {
         swordAttackAudio.play(1.0f);
         return super.attack(character);
 
     }
-
-
-
+    public void addMoney(int money){
+        setMoney(getMoney() + money);
+    };
+    public void pay(int money){
+        setMoney(getMoney() - money);
+    }
+    public void removeItem(Item item){
+        inventory.remove(item);
+    }
+    public void addItem(Item item){
+        inventory.add(item);
+    }
 }
