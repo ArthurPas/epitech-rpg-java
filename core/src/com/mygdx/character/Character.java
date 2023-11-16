@@ -1,5 +1,7 @@
 package com.mygdx.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Weapon;
@@ -33,6 +35,7 @@ public class Character {
     }
 
     public boolean isDead(){
+
         return this.getStat().get(Stat.HP) <= 0;
     }
 
@@ -113,6 +116,8 @@ public class Character {
     public int attack(Character character) {
         int critMultiplicator = 1;
         if ((int) (Math.random() * 100) <= getStat().get(Stat.AGILITY)*weaponEquiped.getCriticalStrikeProb()) {
+
+
             System.out.println("Critical strike");
             critMultiplicator = 2;
         }
@@ -121,7 +126,9 @@ public class Character {
             return 0;
         } else {
             int dammage = (int) (getStat().get(Stat.STRENGTH) * weaponEquiped.getDamage() * critMultiplicator);
+
             System.out.println("dammage = " + dammage);
+
             System.out.println("old HP of "+ character.getName()+"= " + character.getStat().get(Stat.HP));
 
             character.changeStat(Stat.HP, -dammage);

@@ -1,5 +1,7 @@
 package com.mygdx.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Item;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Player extends Character {
+    boolean soundplayed = false;
     private int xpLevel;
     private List<Item> inventory;
     private int money;
@@ -28,7 +31,7 @@ public class Player extends Character {
         Map<Stat,Integer> stats = new HashMap<>();
         stats.put(Stat.STRENGTH,1);
         stats.put(Stat.AGILITY,20);
-        stats.put(Stat.HP,100);
+        stats.put(Stat.HP,120);
         return stats;
     }
 
@@ -60,10 +63,13 @@ public class Player extends Character {
     protected boolean changeWeapon(Weapon weapon) {
         return false;
     }
+    Sound swordAttackAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/swordAttack.wav"));
+    Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
     public void move(Room room, Tile actualPosition, int xMouse, int yMouse) {
         Tile tileClicked = room.getSpecificTile(xMouse, yMouse);
         if (actualPosition.isNeighbor(room, tileClicked) && tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(tileClicked);
+            footStepAudio.play(1.0f);
         }
 
         if (room.getSpecificTile(xMouse,yMouse).getX() > actualPosition.getX()) {
@@ -81,7 +87,12 @@ public class Player extends Character {
         }
 
     }
+    @Override
+    public int attack(Character character) {
+        swordAttackAudio.play(1.0f);
+        return super.attack(character);
 
+    }
     public void addMoney(int money){
         setMoney(getMoney() + money);
     };
@@ -94,5 +105,4 @@ public class Player extends Character {
     public void addItem(Item item){
         inventory.add(item);
     }
-
 }
