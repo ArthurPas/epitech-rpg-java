@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Monster extends Character {
+    private boolean deathSoundPlayed = false;
     private  float dropWeaponProb;
     private float vivacity;
 
@@ -64,12 +65,22 @@ public class Monster extends Character {
     }
 
 
-
     @Override
     public int attack(Character character) {
          Sound monsterAttack = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroHurt.wav"));
             monsterAttack.play(1.0f);
         return super.attack(character);
+
+    }
+
+    @Override
+    public boolean isDead() {
+        if (!deathSoundPlayed) {
+            Sound doorOpenedAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/doorOpened.ogg"));
+            doorOpenedAudio.play(1.0f);
+            deathSoundPlayed = true; //
+        }
+        return super.isDead();
     }
 }
 
