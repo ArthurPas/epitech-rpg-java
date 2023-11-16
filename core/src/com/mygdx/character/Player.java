@@ -91,7 +91,6 @@ public class Player extends Character {
     @Override
     public int attack(Character character) {
         swordAttackAudio.play(1.0f);
-
         return super.attack(character);
 
     }

@@ -75,7 +75,7 @@ public class Monster extends Character {
 
     @Override
     public boolean isDead() {
-        if (!deathSoundPlayed) {
+        if (!deathSoundPlayed ) {
             Sound doorOpenedAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/doorOpened.ogg"));
             doorOpenedAudio.play(1.0f);
             deathSoundPlayed = true; //

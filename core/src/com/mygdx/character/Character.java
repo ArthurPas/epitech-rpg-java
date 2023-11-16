@@ -35,6 +35,7 @@ public class Character {
     }
 
     public boolean isDead(){
+
         return this.getStat().get(Stat.HP) <= 0;
     }
 
