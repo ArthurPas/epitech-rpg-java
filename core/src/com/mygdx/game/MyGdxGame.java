@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.utils.Timer;
@@ -42,7 +43,18 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     int dammageDeal;
     Sprite heroSprite;
     Sprite monsterSprite;
+    Boolean youWillDieAudioPlayed = false;
 
+    Boolean heroDiedAudioPlayed = false;
+
+    boolean monsterDiedAudioPlayed = false;
+
+    float timeBeforeDeath = 0f;
+    float deathDelay = 1f;
+    boolean moveRight = false;
+    boolean moveLeft = false;
+    boolean moveTop = false;
+    boolean moveBottom = false;
 
     @Override
     public void create() {
@@ -55,14 +67,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player = game.getPlayer();
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
         monster = actualRoom.getMonster();
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            @Override
-            public boolean touchDown(int x, int y, int pointer, int button) {
-                player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
-                heroSprite = new Sprite(new Texture(player.getPathToAsset()));
-                return true;
-            }
-        });
+
+
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
@@ -93,9 +99,57 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         drawFloor();
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
+        Gdx.input.setInputProcessor(new InputAdapter() {
+
+
+//            @Override
+//            public boolean touchDown(int x, int y, int pointer, int button) {
+//                player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
+//                heroSprite = new Sprite(new Texture(player.getPathToAsset()));
+//                return true;
+//            }
+            @Override
+            public boolean keyDown(int keycode) {
+                float speed = 100f;
+                float newX = player.getPosition().getX();
+                float newY = player.getPosition().getY();
+
+                switch (keycode) {
+                    case Input.Keys.W:
+                        newY += speed;
+                        player.setPathToAsset("character/heroBack.png");
+                        break;
+
+                        case Input.Keys.A:
+                            newX -= speed;
+                            player.setPathToAsset("character/heroLeft.png");
+                            break;
+                            case Input.Keys.S:
+                                newY -= speed;
+                                player.setPathToAsset("character/heroFront.png");
+                                break;
+                                case Input.Keys.D:
+                                    newX += speed;
+                                    player.setPathToAsset("character/heroRight.png");
+                                    break;
+                                    default:
+                                        System.out.println("not the right key");
+                }
+
+                player.getPosition().setX((int) newX);
+                player.getPosition().setY((int) newY);
+                Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
+                footStepAudio.play(1.0f);
+
+                heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+                heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
+                return true;
+            }
+        });
 
         heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
+
 
         monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
@@ -112,6 +166,11 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition())&& !monster.isDead() && !player.isDead());
 
         if (player.isInFight()) {
+            if(!youWillDieAudioPlayed){
+                Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
+                youwillDieAudio.play(1.0f);
+                youWillDieAudioPlayed = true;
+            }
             Sprite heroLifeBar = new Sprite(new Texture("character/blueBar"+player.calculateLifeDividedBy4()+".png"));
             Sprite monsterLifeBar = new Sprite(new Texture("character/redBar"+monster.calculateLifeDividedBy4()+".png"));
             heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() +actualRoom.getRelativeWidth());
@@ -134,22 +193,47 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 monsterSprite.setSize(actualRoom.getRelativeWidth()/2, actualRoom.getRelativeHeight()/2);
                 player.setInFight(false);
                 actualRoom.setDoorOpen();
+                Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
+
+
+                timeBeforeDeath += Gdx.graphics.getDeltaTime();
+                if (timeBeforeDeath > deathDelay) {
+                    if(!monsterDiedAudioPlayed){
+                        monsterDied.play(1.0f);
+                        monsterDiedAudioPlayed = true;
+                    }
+                    timeBeforeDeath = 0f;
+                }
+                youWillDieAudioPlayed = false;
+
             }
             if(player.isDead()){
                 heroSprite = new Sprite(new Texture("character/heroDied.png"));
                 heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
                 heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
                 player.setInFight(false);
+                timeBeforeDeath += Gdx.graphics.getDeltaTime();
+                if (timeBeforeDeath > deathDelay) {
+                    if(!heroDiedAudioPlayed){
+                        Sound heroDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroDied.wav"));
+                        heroDied.play(1.0f);
+                        heroDiedAudioPlayed = true;
+                    }
+                    timeBeforeDeath = 0f;
+                }
+
             }
         if (game.isWin()) {
             //TODO : add a win screen
             System.out.println("You win");
+
         }
         if (actualRoom.isDoorOpen() && player.getPosition() == actualRoom.getExitTile()) {
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+            monsterDiedAudioPlayed = false;
         }
         List<Weapon> weaponsToSell = new ArrayList<>();
         weaponsToSell.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));

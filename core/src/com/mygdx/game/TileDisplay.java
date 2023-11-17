@@ -101,4 +101,8 @@ public class TileDisplay {
     public void setTextureType(TextureType textureType) {
         this.textureType = textureType;
     }
+
+    public int getTileSize() {
+        return 0;
+    }
 }
