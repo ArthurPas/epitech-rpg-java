@@ -2,18 +2,14 @@ package com.mygdx.item;
 
 import com.mygdx.item.Item;
 
+import java.io.File;
+import java.util.Objects;
+
 public class Weapon  extends Item {
     private int damage;
     private float criticalStrikeProb;
 
-    @Override
-    public String toString() {
-        return "Weapon{" +
-                "damage=" + damage +
-                ", criticalStrikeProb=" + criticalStrikeProb +
-                ", criticalFailureProb=" + criticalFailureProb +
-                '}';
-    }
+
 
     private float criticalFailureProb;
 
@@ -50,6 +46,27 @@ public class Weapon  extends Item {
 
     protected int attack(Character character) {
         return 0;
+    }
+
+    static public String getRandomWeaponPath() {
+        File dir = new File("item/weapon");
+        File[] monsterAssets = dir.listFiles();
+        assert monsterAssets != null;
+        return monsterAssets[(int) (Math.random() *(monsterAssets.length-1))].getPath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Weapon weapon = (Weapon) o;
+        return damage == weapon.damage && Float.compare(weapon.criticalStrikeProb, criticalStrikeProb) == 0 && Float.compare(weapon.criticalFailureProb, criticalFailureProb) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), damage, criticalStrikeProb, criticalFailureProb);
     }
 
 }

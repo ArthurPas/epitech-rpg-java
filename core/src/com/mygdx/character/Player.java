@@ -16,11 +16,14 @@ public class Player extends Character {
     private List<Item> inventory;
     private int money;
 
+    private boolean isInChest;
+
     public Player(int xpLevel, List<Item> inventory, int money, Tile position) {
         super("Player", basicStat(), new Weapon("Basic sword", 1, Rarity.COMMON, 100, 10, 4, 0,"item/weapon/sword8.png"),position);
         this.xpLevel = xpLevel;
         this.inventory = new ArrayList<>();
-        this.money = 0;
+        this.money = money;
+        this.isInChest = false;
         setPathToAsset("character/heroFront.png");
     }
 
@@ -42,6 +45,14 @@ public class Player extends Character {
 
     public List<Item> getInventory() {
         return inventory;
+    }
+
+    public boolean isInChest() {
+        return isInChest;
+    }
+
+    public void setInChest(boolean inChest) {
+        isInChest = inChest;
     }
 
 
@@ -85,8 +96,17 @@ public class Player extends Character {
     public void addMoney(int money){
         setMoney(getMoney() + money);
     };
-    public void pay(int money){
-        setMoney(getMoney() - money);
+    public boolean pay(int money){
+        System.out.println(money+" p "+getMoney());
+        if(getMoney()>= money){
+            setMoney(getMoney() - money);
+            return true;
+        }else {
+            //TODO: exception
+            System.out.println("you don't have enough money");
+            return false;
+        }
+
     }
     public void removeItem(Item item){
         inventory.remove(item);
