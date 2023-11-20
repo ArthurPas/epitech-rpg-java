@@ -34,7 +34,6 @@ public class Player extends Character implements InputProcessor {
         stats.put(Stat.HP, 100);
         return stats;
     }
-
     public int getXpLevel() {
         return xpLevel;
     }
@@ -63,11 +62,14 @@ public class Player extends Character implements InputProcessor {
         return false;
     }
 
+
     Sound swordAttackAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/swordAttack.wav"));
     Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
 
     public void move(Room room, Tile actualPosition, int xMouse, int yMouse) {
         Tile tileClicked = room.getSpecificTile(xMouse, yMouse);
+        System.out.println(tileClicked);
+        System.out.println(tileClicked.getX() + " " + tileClicked.getY());
 
         if (actualPosition.isNeighbor(room, tileClicked) && tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(tileClicked);
@@ -90,6 +92,28 @@ public class Player extends Character implements InputProcessor {
 
     }
 
+    public void move(Room room,int actualX, int actualY, int mooveX, int mooveY) {
+        Tile tileClicked = room.getSpecificTile(mooveX+10, mooveY+10);
+
+        if (tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
+            setPosition(mooveX, mooveY, room);
+            System.out.println("cc" + this.getX());
+            System.out.println("ccc" + this.getY());
+        }
+        if (mooveX > actualX) {
+            System.out.println("right position");
+            setPathToAsset("character/heroRight.png");
+        } else if (mooveX < actualX) {
+            System.out.println("left position");
+            setPathToAsset("character/heroLeft.png");
+        } else if (mooveY > actualY) {
+            System.out.println("top position");
+            setPathToAsset("character/heroBack.png");
+        } else if (mooveY < actualY) {
+            System.out.println("bottom position");
+            setPathToAsset("character/heroFront.png");
+        }
+    }
 
 
 
