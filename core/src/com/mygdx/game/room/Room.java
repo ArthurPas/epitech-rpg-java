@@ -9,6 +9,7 @@ import com.mygdx.utils.PathFinding;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
 
 public class Room {
     private int width;
@@ -17,8 +18,7 @@ public class Room {
     private int relativeWidth;
     private int relativeHeight;
     private boolean isDoorOpen;
-
-
+    private int roomNumber;
     private Monster monster;
 
     private Tile chestTile;
@@ -28,14 +28,14 @@ public class Room {
         return tiles.get(tiles.size() - height - 2);
     }
 
-    public Room(int width, int height, Monster monster) {
+    public Room(int width, int height, Monster monster, int roomNumber) {
         this.width = width;
         this.height = height;
         this.monster = monster;
+        this.roomNumber = roomNumber;
         this.relativeWidth = Gdx.graphics.getHeight() / width;
         this.relativeHeight = Gdx.graphics.getWidth() / height;
         this.tiles = createMap(1, width, height);
-        this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
     }
 
     public Monster getMonster() {
@@ -83,13 +83,14 @@ public class Room {
         for (Tile tile : neighbors) {
             if (!tile.getTileDisplay().isWalkable())
                 neighbors.remove(tile);
-            }
+        }
         return neighbors;
     }
 
     public int getRelativeWidth() {
         return relativeWidth;
     }
+
 
     public void setRelativeWidth(int relativeWidth) {
         this.relativeWidth = relativeWidth;
@@ -127,23 +128,26 @@ public class Room {
         }
         return null;
     }
-    public Tile getEntry(){
-        return tiles.get(height+1);
+
+    public Tile getEntry() {
+        return tiles.get(height + 1);
     }
 
+    //TODO implement the room level management and display the right texture
     public List<Tile> createMap(int roomLevel, int width, int height) {
         List<Tile> tiles = new ArrayList<>();
         TileDisplay border = new TileDisplay(true, false, TextureType.CHILL_OUTSIDE);
         TileDisplay wall = new TileDisplay(false, false, TextureType.CHILL_OUTSIDE);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if ((i == 0) || (j % height == 0) || (j % width == width-1 )|| (i % height == height-1)) {
+                if ((i == 0) || (j % height == 0) || (j % width == width - 1) || (i % height == height - 1)) {
                     tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, border));
                 } else {
                     tiles.add(new Tile(relativeWidth * i, relativeHeight * j, false, wall));
                 }
             }
         }
+
         return tiles;
 //        Map<Tile, Sprite> map = new HashMap<>();
 //        for (Tile tile : tiles) {
@@ -153,22 +157,26 @@ public class Room {
 //        System.out.println(map.size());
     }
 
-    public void displayRandomPath(Tile begin, Tile end, int roomLevel ) {
+    public void displayRandomPath(Tile begin, Tile end, int roomLevel) {
 //        TODO : room level management change texture*
         List<Tile> path = PathFinding.findAPath(this, begin, end);
         for (Tile tile : path) {
             tile.setTileDisplay(new TileDisplay(false, true, TextureType.CHILL_OUTSIDE));
-
         }
+        getExitTile().getTileDisplay().setTexturePath("allTextures/closedDoor.png");
     }
 
     public boolean isDoorOpen() {
         return isDoorOpen;
     }
 
-    public void setDoorOpen() {
+    public void setDoorOpen(Tile fightTile) {
         isDoorOpen = true;
+        setChestTile(getChestTileAfterFight(fightTile));
+        getExitTile().getTileDisplay().setTexturePath("allTextures/openDoor.png");
+
     }
+
     public List<Tile> getTiles() {
         return tiles;
     }
@@ -179,5 +187,23 @@ public class Room {
 
     public void setChestTile(Tile chestTile) {
         this.chestTile = chestTile;
+    }
+
+    public Tile getChestTileAfterFight(Tile fightTile) {
+        List<Tile> tiles = getNeighbors(fightTile, 1);
+        for (Tile tile : tiles) {
+            if (tile.getTileDisplay().isWalkable() && !tile.getTileDisplay().isBorder()) {
+                return tile;
+            }
+        }
+        return fightTile;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 }

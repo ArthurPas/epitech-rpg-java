@@ -25,11 +25,14 @@ public class Tile {
     }
 
     public Tile(int x, int y, boolean isDoor, TileDisplay tileDisplay) {
-        Tile.id = id+1;
+        Tile.id = id + 1;
         this.x = x;
         this.y = y;
         this.isDoor = isDoor;
         this.tileDisplay = tileDisplay;
+        if (isDoor) {
+            this.tileDisplay.setTexturePath("allTextures/closedDoor.png");
+        }
     }
 
 
