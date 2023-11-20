@@ -156,6 +156,7 @@ public class ChestInterface {
                 System.out.println("player bought a weapon he has : " + player.getMoney() +" coins.");
                 player.addItem(linkItemsSprite.get(sprite));
 
+
             }
         }
         for (Sprite sprite: spritesSell) {
