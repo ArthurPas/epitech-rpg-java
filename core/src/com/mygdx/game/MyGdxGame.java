@@ -68,7 +68,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         font = new BitmapFont();
         game = new Game(4);
         actualRoom = game.getRooms().get(0);
-        monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
         game.play(actualRoom);
         player = game.getPlayer();
         player.setX(player.getPosition().getX());
@@ -76,7 +75,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
 
         monster = actualRoom.getMonster();
-        chest = new Chest(1, 10);
+        monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+        chest = new Chest(actualRoom.getRoomNumber(), 10);
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
         itemsSprites = chestInterface.getItemSprites();
@@ -96,12 +96,19 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
+                if (chestInterface.handleClick(x, y)) {
+                    itemsSprites = chestInterface.getItemSprites();
+                    itemSelectedColor = Color.GREEN;
+                } else {
+                    itemSelectedColor = Color.RED;
+                }
+                chestSprites = chestInterface.displayChestInterface();
                 return true;
             }
 
             @Override
             public boolean keyDown(int keycode) {
-                int speed = 75;
+                int speed = actualRoom.getRelativeWidth() / 2;
                 int newX = player.getX();
                 int newY = player.getY();
 
@@ -111,15 +118,12 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                         break;
 
                     case Input.Keys.A:
-//                            newX -= speed;
                         player.move(actualRoom, newX, newY, newX - speed, newY);
                         break;
                     case Input.Keys.S:
-//                                newY -= speed;
                         player.move(actualRoom, newX, newY, newX, newY - speed);
                         break;
                     case Input.Keys.D:
-//                                    newX += speed;
                         player.move(actualRoom, newX, newY, newX + speed, newY);
                         break;
                     default:
@@ -155,15 +159,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
 
-        Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
-        chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-        chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
-        chestSprite.draw(batch);
 
-        Sprite exitSprite = new Sprite(new Texture("fence.png"));
-        exitSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
-        exitSprite.setPosition(actualRoom.getExitTile().getX(), actualRoom.getExitTile().getY() + actualRoom.getRelativeHeight() / 2);
-        exitSprite.draw(batch);
+
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
 
         if (player.isInFight()) {
@@ -193,10 +190,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
             monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
             player.setInFight(false);
-            actualRoom.setDoorOpen();
+            actualRoom.setDoorOpen(monster.getPosition());
+
+            Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
+            chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+            chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
+            chestSprite.draw(batch);
             Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
-
-
+            player.setInChest(actualRoom.getNeighbors(actualRoom.getChestTile(), 1).contains(player.getPosition()));
             timeBeforeDeath += Gdx.graphics.getDeltaTime();
             if (timeBeforeDeath > deathDelay) {
                 if (!monsterDiedAudioPlayed) {
@@ -233,12 +234,16 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
+            System.out.println(actualRoom.getRoomNumber());
+            chest = new Chest(actualRoom.getRoomNumber(), 10);
+            chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
+            chestSprites = chestInterface.displayChestInterface();
+            itemsSprites = chestInterface.getItemSprites();
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
             monsterDiedAudioPlayed = false;
         }
         //TODO: implement the chest interaction in game (set true for dev mode)
-        player.setInChest(false);
         if (player.isInChest()) {
             for (Sprite allChestSprite : chestSprites) {
                 allChestSprite.draw(batch);

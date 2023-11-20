@@ -12,6 +12,7 @@ public class Chest {
 
     public Chest(int roomNumber, int moneyAvailable) {
         setWeaponToSell(roomNumber);
+        System.out.println("coycou");
         this.moneyAvailable = moneyAvailable;
     }
 
@@ -42,7 +43,6 @@ public class Chest {
             weapon.setCost(calculateCostByRarity(weapon.getRarity()));
             this.items.add(weapon);
         }
-        System.out.println(items);
     }
     public void addItem(Item item){
         this.items.add(item);
