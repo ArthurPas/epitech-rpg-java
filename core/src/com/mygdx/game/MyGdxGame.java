@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
     SpriteBatch batch;
     List<Tile> tileList;
-    Room actualRoom;
+    static Room actualRoom;
     Animation<TextureRegion> animation;
     float elapsed;
     Player player;
@@ -48,7 +48,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     List<BitmapFont> itemsPrices = new CopyOnWriteArrayList<>();
     Chest chest;
 
-    Color itemSelectedColor = Color.GREEN;;
+    Color itemSelectedColor = Color.GREEN;
+    ;
     Boolean youWillDieAudioPlayed = false;
     Boolean heroDiedAudioPlayed = false;
 
@@ -136,6 +137,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             }
         };
     }
+
     public void drawFloor() {
         for (Tile tile : actualRoom.getTiles()) {
             Sprite sprite = new Sprite(new Texture(tile.getPathToAsset()));
@@ -144,6 +146,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             sprite.draw(batch);
         }
     }
+
     @Override
     public void render() {
         batch.begin();
@@ -158,7 +161,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
-
 
 
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
@@ -191,6 +193,13 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
             player.setInFight(false);
             actualRoom.setDoorOpen(monster.getPosition());
+            Item dropedItem = monster.getDroped();
+            if (dropedItem != null) {
+                Sprite dropSprite = new Sprite(new Texture(dropedItem.getPathToAsset()));
+                dropSprite.setPosition(monster.getX(), monster.getY());
+                dropSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+                dropSprite.draw(batch);
+            }
 
             Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
             chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
@@ -264,21 +273,26 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         }
         batch.end();
     }
-            public void mooveCharacter(Character character, Sprite sprite) {
-                sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                sprite.setPosition(character.getPosition().getX(), character.getPosition().getY());
-                sprite.draw(batch);
-            }
 
-            public int fightRound(Character char1, Character char2, boolean isChar1) {
-                if (isChar1) {
-                    return char1.attack(char2);
+    public void mooveCharacter(Character character, Sprite sprite) {
+        sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        sprite.setPosition(character.getPosition().getX(), character.getPosition().getY());
+        sprite.draw(batch);
+    }
 
-                } else {
-                    return char2.attack(char1);
-                }
-            }
-            //.sleep not working in render
+    public int fightRound(Character char1, Character char2, boolean isChar1) {
+        if (isChar1) {
+            return char1.attack(char2);
+
+        } else {
+            return char2.attack(char1);
+        }
+    }
+
+    public static int getActualRoomLevel() {
+        return actualRoom.getRoomNumber();
+    }
+    //.sleep not working in render
 //    public Character fight(Character attacker, Character defender) {
 //        Sprite heroSprite = new Sprite(new Texture("character/hero.png"));
 //        Sprite monsterSprite = new Sprite(new Texture("character/monsters/goblin_9.png"));
@@ -317,15 +331,15 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 //    }
 
 
-            @Override
-            public void dispose() {
-                batch.dispose();
+    @Override
+    public void dispose() {
+        batch.dispose();
         /*
         for (Tile tile : textures.keySet()) {
             textures.get(tile).dispose();
         }
 
          */
-            }
-        }
+    }
+}
 

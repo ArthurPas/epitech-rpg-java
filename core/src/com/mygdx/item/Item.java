@@ -62,6 +62,7 @@ public abstract class Item {
     protected void decreaseDurability(){
     };
 
+
     public Rarity getRarity() {
         return rare;
     }

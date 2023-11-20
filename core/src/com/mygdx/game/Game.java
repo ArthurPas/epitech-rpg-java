@@ -22,7 +22,7 @@ import java.util.Map;
 public class Game {
     private List<Room> rooms;
 
-    private Player player;
+    static private Player player;
 
     private int difficulty;
     private boolean isWin = false;
@@ -76,7 +76,7 @@ public class Game {
         return rooms;
     }
 
-    public Player getPlayer() {
+    public static Player getPlayer() {
         return player;
     }
 
@@ -95,6 +95,7 @@ public class Game {
         stat.put(Stat.AGILITY, 10);
         room.displayRandomPath(room.getEntry(), room.getExitTile(), 1);
         player.setPosition(room.getEntry());
+        room.getMonster().drop();
         return room.getTiles();
     }
     public Room nextRoom(Room oldRoom) {

@@ -1,4 +1,5 @@
 package com.mygdx.character;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -8,6 +9,11 @@ import com.mygdx.game.Tile;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
+import com.mygdx.item.equipment.Agility;
+import com.mygdx.item.equipment.Attack;
+import com.mygdx.item.equipment.Defense;
+import com.mygdx.item.equipment.Equipment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +43,7 @@ public class Player extends Character implements InputProcessor {
         stats.put(Stat.HP, 100);
         return stats;
     }
+
     public int getXpLevel() {
         return xpLevel;
     }
@@ -48,6 +55,7 @@ public class Player extends Character implements InputProcessor {
     public List<Item> getInventory() {
         return inventory;
     }
+
     public boolean isInChest() {
         return isInChest;
     }
@@ -55,7 +63,7 @@ public class Player extends Character implements InputProcessor {
     public void setInChest(boolean inChest) {
         isInChest = inChest;
     }
-  
+
     public void setInventory(List<Item> inventory) {
         this.inventory = inventory;
     }
@@ -102,8 +110,8 @@ public class Player extends Character implements InputProcessor {
 
     }
 
-    public void move(Room room,int actualX, int actualY, int mooveX, int mooveY) {
-        Tile tileClicked = room.getSpecificTile(mooveX+10, mooveY+10);
+    public void move(Room room, int actualX, int actualY, int mooveX, int mooveY) {
+        Tile tileClicked = room.getSpecificTile(mooveX + 10, mooveY + 10);
 
         if (tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(mooveX, mooveY, room);
@@ -125,7 +133,22 @@ public class Player extends Character implements InputProcessor {
         }
     }
 
-
+    public void equip(Item item) {
+        if (item instanceof Weapon) {
+            inventory.add(item);
+        } else {
+            if (item instanceof Attack) {
+                setStat(Stat.STRENGTH, getStat().get(Stat.STRENGTH) + ((Attack) item).getBonusCapacity().get(Stat.STRENGTH));
+                System.out.println("Hop a moi le " + item.getName());
+            } else if (item instanceof Defense) {
+                setStat(Stat.HP, getStat().get(Stat.HP) + ((Defense) item).getBonusCapacity().get(Stat.HP));
+                System.out.println("Hop a moi le " + item.getName());
+            } else if (item instanceof Agility) {
+                setStat(Stat.AGILITY, getStat().get(Stat.AGILITY) + ((Agility) item).getBonusCapacity().get(Stat.AGILITY));
+                System.out.println("Hop a moi le " + item.getName());
+            }
+        }
+    }
 
 
     @Override
@@ -137,13 +160,16 @@ public class Player extends Character implements InputProcessor {
 
     public void addMoney(int money) {
         setMoney(getMoney() + money);
-    };
-    public boolean pay(int money){
-        System.out.println(money+" p "+getMoney());
-        if(getMoney()>= money){
+    }
+
+    ;
+
+    public boolean pay(int money) {
+        System.out.println(money + " p " + getMoney());
+        if (getMoney() >= money) {
             setMoney(getMoney() - money);
             return true;
-        }else {
+        } else {
             //TODO: exception
             System.out.println("you don't have enough money");
             return false;
