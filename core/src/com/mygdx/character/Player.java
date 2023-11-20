@@ -41,6 +41,7 @@ public class Player extends Character implements InputProcessor {
         stats.put(Stat.STRENGTH, 1);
         stats.put(Stat.AGILITY, 20);
         stats.put(Stat.HP, 100);
+        stats.put(Stat.MAX_HP, stats.get(Stat.HP));
         return stats;
     }
 
@@ -141,7 +142,7 @@ public class Player extends Character implements InputProcessor {
                 setStat(Stat.STRENGTH, getStat().get(Stat.STRENGTH) + ((Attack) item).getBonusCapacity().get(Stat.STRENGTH));
                 System.out.println("Hop a moi le " + item.getName());
             } else if (item instanceof Defense) {
-                setStat(Stat.HP, getStat().get(Stat.HP) + ((Defense) item).getBonusCapacity().get(Stat.HP));
+                setStat(Stat.MAX_HP, getStat().get(Stat.MAX_HP) + ((Defense) item).getBonusCapacity().get(Stat.MAX_HP));
                 System.out.println("Hop a moi le " + item.getName());
             } else if (item instanceof Agility) {
                 setStat(Stat.AGILITY, getStat().get(Stat.AGILITY) + ((Agility) item).getBonusCapacity().get(Stat.AGILITY));

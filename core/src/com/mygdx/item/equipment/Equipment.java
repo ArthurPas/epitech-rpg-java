@@ -29,15 +29,18 @@ public abstract class Equipment extends Item {
 
     public static Equipment getRandomEquipment(int roomLevel) {
         int random = (int) (Math.random() * 3);
+        int randomStatBonus = (int) (Math.random() * 2) + 1;
         int cursed = (int) (Math.random() * roomLevel * 1.5);
         //TODO find cool names for equipment
         switch (random) {
             case 0:
-                return new Attack("ring", (int) (roomLevel * 1.5), cursed > roomLevel);
+                System.out.println((roomLevel * randomStatBonus));
+                System.out.println(cursed > roomLevel);
+                return new Attack("ring", (roomLevel / 2 * randomStatBonus), cursed > roomLevel);
             case 1:
-                return new Defense("shield", (int) (roomLevel * 1.5), cursed > roomLevel);
+                return new Defense("shield", (roomLevel * randomStatBonus * 10), cursed > roomLevel);
             case 2:
-                return new Agility("oldPaper", (int) (roomLevel * 1.5), cursed > roomLevel);
+                return new Agility("oldPaper", (roomLevel * randomStatBonus), cursed > roomLevel);
             default:
                 return null;
         }

@@ -9,7 +9,7 @@ public class Defense extends Equipment {
     public Defense(String name, int nbAgility, boolean isCursed) {
         super(isCursed ? "cursed " + name + " for the weak " : "blessed " + name + " for the brave", "item/equipment/shield.png");
         Map<Stat, Integer> bonusCapacity = new HashMap<>();
-        bonusCapacity.put(Stat.HP, isCursed ? nbAgility : -nbAgility);
+        bonusCapacity.put(Stat.MAX_HP, isCursed ? -nbAgility : nbAgility);
         super.setBonusCapacity(bonusCapacity);
     }
 }

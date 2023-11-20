@@ -10,7 +10,7 @@ public class Attack extends Equipment {
 
     public Attack(String name, int nbAgility, boolean isCursed) {
         super(isCursed ? "cursed " + name + " for strength " : "blessed " + name + " for strength", "item/equipment/ringOfPower.png");
-        bonusCapacity.put(Stat.STRENGTH, isCursed ? nbAgility : -nbAgility);
+        bonusCapacity.put(Stat.STRENGTH, isCursed ? -nbAgility : nbAgility);
         super.setBonusCapacity(bonusCapacity);
     }
 }

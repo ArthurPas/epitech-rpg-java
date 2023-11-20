@@ -56,16 +56,17 @@ public class Game {
 
     public List<Room> createsAllRooms(int difficulty) {
         List<Room> rooms = new ArrayList<>();
-        for (int i = 0; i < difficulty; i++) {
+        for (int i = 1; i <= difficulty; i++) {
             Map<Stat, Integer> stats = new HashMap<>();
 
             //TODO : implement with real monster stats depending on room and difficulty
-            stats.put(Stat.STRENGTH, 1);
-            stats.put(Stat.AGILITY, 10);
-            stats.put(Stat.HP, 1);
-            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 10, 1, 0, "item/weapon/sword22.png"), null, 0, 0.7f);
+            stats.put(Stat.STRENGTH, 1 + (i / 3));
+            stats.put(Stat.AGILITY, 10 + i);
+            stats.put(Stat.HP, 50 / (i * 4));
+            System.out.println("yo yo yo" + stats.get(Stat.HP));
+            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 10, 1, 0, "item/weapon/sword22.png"), null, (float) 75 / i * 1.5f, 0.7f);
             System.out.println(Monster.indexMonster);
-            Room room = new Room(10, 10, monster, i + 1);
+            Room room = new Room(10, 10, monster, i);
             monster.setPosition(room.getExitTile());
             rooms.add(room);
         }

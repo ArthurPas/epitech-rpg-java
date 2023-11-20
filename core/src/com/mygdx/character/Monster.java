@@ -62,6 +62,7 @@ public class Monster extends Character {
         int random = (int) (Math.random() * 100);
         if (random < dropProb) {
             setDroped(Equipment.getRandomEquipment(MyGdxGame.getActualRoomLevel()));
+            System.out.println("droped : " + getDroped().getName());
         }
 
     }

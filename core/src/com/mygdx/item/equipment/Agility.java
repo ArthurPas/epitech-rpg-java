@@ -9,7 +9,7 @@ public class Agility extends Equipment {
     public Agility(String name, int nbAgility, boolean isCursed) {
         super(isCursed ? "cursed " + name + " of agility" : "blessed " + name + " of agility", "item/equipment/oldPaper.png");
         Map<Stat, Integer> bonusCapacity = new HashMap<>();
-        bonusCapacity.put(Stat.AGILITY, isCursed ? nbAgility : -nbAgility);
+        bonusCapacity.put(Stat.AGILITY, isCursed ? -nbAgility : nbAgility);
         super.setBonusCapacity(bonusCapacity);
     }
 }
