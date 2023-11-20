@@ -1,25 +1,20 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.character.Character;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
-import com.mygdx.character.Stat;
 import com.mygdx.game.room.Room;
-import com.mygdx.item.Rarity;
-import com.mygdx.item.Weapon;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.mygdx.item.Item;
+import com.mygdx.item.Chest;
 
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MyGdxGame extends ApplicationAdapter implements ApplicationListener {
     SpriteBatch batch;
@@ -30,7 +25,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Player player;
     Monster monster;
     Game game;
-    ChestInterface testChestInterface;
+    ChestInterface chestInterface;
 
     float timeSeconds = 0f;
     float period = 2f;
@@ -43,8 +38,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     int dammageDeal;
     Sprite heroSprite;
     Sprite monsterSprite;
-    Boolean youWillDieAudioPlayed = false;
+    List<Sprite> chestSprites;
+    List<Sprite> itemsSprites;
 
+    List<BitmapFont> itemsPrices = new CopyOnWriteArrayList<>();
+    Chest chest;
+
+    Color itemSelectedColor = Color.GREEN;;
+    Boolean youWillDieAudioPlayed = false;
     Boolean heroDiedAudioPlayed = false;
 
     boolean monsterDiedAudioPlayed = false;
@@ -71,7 +72,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
 
         monster = actualRoom.getMonster();
-
+        chest = new Chest(1, 10);
+        chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
+        chestSprites = chestInterface.displayChestInterface();
+        itemsSprites = chestInterface.getItemSprites();
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
@@ -117,7 +121,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                     default:
                         System.out.println("not the right key");
                 }
-
                 Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
                 footStepAudio.play(1.0f);
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
@@ -125,141 +128,142 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             }
         };
     }
-            public void drawFloor() {
-                for (Tile tile : actualRoom.getTiles()) {
-                    Sprite sprite = new Sprite(new Texture(tile.getPathToAsset()));
-                    sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                    sprite.setPosition(tile.getX(), tile.getY());
-                    sprite.draw(batch);
+    public void drawFloor() {
+        for (Tile tile : actualRoom.getTiles()) {
+            Sprite sprite = new Sprite(new Texture(tile.getPathToAsset()));
+            sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+            sprite.setPosition(tile.getX(), tile.getY());
+            sprite.draw(batch);
                 }
+    @Override
+    public void render() {
+        batch.begin();
+        drawFloor();
+        Gdx.input.setInputProcessor(inputAdapter);
+        monsterSprite.draw(batch);
+        heroSprite.draw(batch);
+
+        heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        heroSprite.setPosition(player.getX(), player.getY());
+
+
+        monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
+
+        Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
+        chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
+        chestSprite.draw(batch);
+
+        Sprite exitSprite = new Sprite(new Texture("fence.png"));
+        exitSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+        exitSprite.setPosition(actualRoom.getExitTile().getX(), actualRoom.getExitTile().getY() + actualRoom.getRelativeHeight() / 2);
+        exitSprite.draw(batch);
+        player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
+
+        if (player.isInFight()) {
+            if (!youWillDieAudioPlayed) {
+                Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
+                youwillDieAudio.play(1.0f);
+                youWillDieAudioPlayed = true;
             }
-            @Override
-            public void render() {
-                batch.begin();
-                drawFloor();
-                Gdx.input.setInputProcessor(inputAdapter);
-                monsterSprite.draw(batch);
-                heroSprite.draw(batch);
-
-                heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                heroSprite.setPosition(player.getX(), player.getY());
-
-
-                monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
-
-                Sprite chestSprite = new Sprite(new Texture("chest_1.png"));
-                chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
-                chestSprite.draw(batch);
-
-                Sprite exitSprite = new Sprite(new Texture("fence.png"));
-                exitSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
-                exitSprite.setPosition(actualRoom.getExitTile().getX(), actualRoom.getExitTile().getY() + actualRoom.getRelativeHeight() / 2);
-                exitSprite.draw(batch);
-                player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
-
-                if (player.isInFight()) {
-                    if (!youWillDieAudioPlayed) {
-                        Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
-                        youwillDieAudio.play(1.0f);
-                        youWillDieAudioPlayed = true;
-                    }
-                    Sprite heroLifeBar = new Sprite(new Texture("character/blueBar" + player.calculateLifeDividedBy4() + ".png"));
-                    Sprite monsterLifeBar = new Sprite(new Texture("character/redBar" + monster.calculateLifeDividedBy4() + ".png"));
-                    heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() + actualRoom.getRelativeWidth());
-                    monsterLifeBar.setPosition(monster.getPosition().getX(), monster.getPosition().getY() + actualRoom.getRelativeWidth());
-                    heroLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
-                    monsterLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
-                    heroLifeBar.draw(batch);
-                    monsterLifeBar.draw(batch);
-                    timeSeconds += Gdx.graphics.getDeltaTime();
-                    if (timeSeconds > period) {
-                        timeSeconds -= period;
-                        dammageDeal = fightRound(player, monster, attacker);
-                        attacker = !attacker;
-                    }
-                }
-                //TODO loose and win management
-                if (monster.isDead()) {
-                    monsterSprite = new Sprite(new Texture("character/death.png"));
-                    monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
-                    monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
-                    player.setInFight(false);
-                    actualRoom.setDoorOpen();
-                    Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
-
-
-                    timeBeforeDeath += Gdx.graphics.getDeltaTime();
-                    if (timeBeforeDeath > deathDelay) {
-                        if (!monsterDiedAudioPlayed) {
-                            monsterDied.play(1.0f);
-                            monsterDiedAudioPlayed = true;
-                        }
-                        timeBeforeDeath = 0f;
-                    }
-                    youWillDieAudioPlayed = false;
-
-                }
-                if (player.isDead()) {
-                    heroSprite = new Sprite(new Texture("character/heroDied.png"));
-                    heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
-                    heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-                    player.setInFight(false);
-                    timeBeforeDeath += Gdx.graphics.getDeltaTime();
-                    if (timeBeforeDeath > deathDelay) {
-                        if (!heroDiedAudioPlayed) {
-                            Sound heroDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroDied.wav"));
-                            heroDied.play(1.0f);
-                            heroDiedAudioPlayed = true;
-                        }
-                        timeBeforeDeath = 0f;
-                    }
-
-                }
-                if (game.isWin()) {
-                    //TODO : add a win screen
-                    System.out.println("You win");
-
-                }
-
-                if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(),1).contains(player.getPosition())) {
-                    actualRoom = game.nextRoom(actualRoom);
-                    game.play(actualRoom);
-                    monster = actualRoom.getMonster();
-                    monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
-                    monsterDiedAudioPlayed = false;
-                }
-                List<Weapon> weaponsToSell = new ArrayList<>();
-                weaponsToSell.add(new Weapon("test", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
-                weaponsToSell.add(new Weapon("test2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword22.png"));
-                weaponsToSell.add(new Weapon("test3", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword25.png"));
-                List<Item> weaponsToBuy = new ArrayList<>();
-                weaponsToBuy.add(new Weapon("myWeapon1", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword24.png"));
-                weaponsToBuy.add(new Weapon("myWeapon2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
-
-                player.setInventory(weaponsToBuy);
-                testChestInterface = new ChestInterface(weaponsToSell, player, batch, 2);
-
-
-                for (Sprite sprite : testChestInterface.displayChestInterface()) {
-//            sprite.draw(batch);
-                }
-
-//        List<Weapon> weapons = new ArrayList<>();
-//        weapons.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword8.png"));
-//        weapons.add(new Weapon("test2",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword22.png"));
-//        List<Item> stuff = new ArrayList<>();
-//        stuff.add(new Weapon("test",10, Rarity.RARE,10,10,10f,10,"item/weapon/sword24.png"));
-//        player.setInventory(stuff);
-//
-//        ChestInterface test = new ChestInterface(weapons,player,batch,2);
-//
-//        for(Sprite sprite : test.displayChestInterface()){
-//            sprite.draw(batch);
-//        }
-                batch.end();
+            Sprite heroLifeBar = new Sprite(new Texture("character/blueBar" + player.calculateLifeDividedBy4() + ".png"));
+            Sprite monsterLifeBar = new Sprite(new Texture("character/redBar" + monster.calculateLifeDividedBy4() + ".png"));
+            heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() + actualRoom.getRelativeWidth());
+            monsterLifeBar.setPosition(monster.getPosition().getX(), monster.getPosition().getY() + actualRoom.getRelativeWidth());
+            heroLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            monsterLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
+            heroLifeBar.draw(batch);
+            monsterLifeBar.draw(batch);
+            timeSeconds += Gdx.graphics.getDeltaTime();
+            if (timeSeconds > period) {
+                timeSeconds -= period;
+                dammageDeal = fightRound(player, monster, attacker);
+                attacker = !attacker;
             }
+        }
+        //TODO loose and win management
+        if (monster.isDead()) {
+            monsterSprite = new Sprite(new Texture("character/death.png"));
+            monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
+            monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
+            player.setInFight(false);
+            actualRoom.setDoorOpen();
+            Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
+
+
+            timeBeforeDeath += Gdx.graphics.getDeltaTime();
+            if (timeBeforeDeath > deathDelay) {
+                if (!monsterDiedAudioPlayed) {
+                    monsterDied.play(1.0f);
+                    monsterDiedAudioPlayed = true;
+                }
+                timeBeforeDeath = 0f;
+            }
+            youWillDieAudioPlayed = false;
+
+        }
+        if (player.isDead()) {
+            heroSprite = new Sprite(new Texture("character/heroDied.png"));
+            heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
+            heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+            player.setInFight(false);
+            timeBeforeDeath += Gdx.graphics.getDeltaTime();
+            if (timeBeforeDeath > deathDelay) {
+                if (!heroDiedAudioPlayed) {
+                    Sound heroDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroDied.wav"));
+                    heroDied.play(1.0f);
+                    heroDiedAudioPlayed = true;
+                }
+                timeBeforeDeath = 0f;
+            }
+
+        }
+        if (game.isWin()) {
+            //TODO : add a win screen
+            System.out.println("You win");
+
+        }
+
+        if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(),1).contains(player.getPosition())) {
+            actualRoom = game.nextRoom(actualRoom);
+            game.play(actualRoom);
+            monster = actualRoom.getMonster();
+            monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+            monsterDiedAudioPlayed = false;
+        }
+        List<Weapon> weaponsToSell = new ArrayList<>();
+        weaponsToSell.add(new Weapon("test", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
+        weaponsToSell.add(new Weapon("test2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword22.png"));
+        weaponsToSell.add(new Weapon("test3", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword25.png"));
+        List<Item> weaponsToBuy = new ArrayList<>();
+        weaponsToBuy.add(new Weapon("myWeapon1", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword24.png"));
+        weaponsToBuy.add(new Weapon("myWeapon2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
+
+        player.setInventory(weaponsToBuy);
+        testChestInterface = new ChestInterface(weaponsToSell, player, batch, 2);
+
+        //TODO: implement the chest interaction in game (set true for dev mode)
+        player.setInChest(true);
+        if (player.isInChest()) {
+            for (Sprite allChestSprite : chestSprites) {
+                allChestSprite.draw(batch);
+            }
+            int[] coords = chestInterface.coordItemSelected(chestInterface.getSpriteSelected());
+            itemsPrices = chestInterface.displayWeaponCost();
+            chestInterface.displayAllMoney();
+            Sprite easterEgs = new Sprite(new Texture("nem.jpg"));
+            easterEgs.setSize(0, 0);
+            easterEgs.draw(batch);
+            if (coords != null) {
+                ShapeRenderer shapeRenderer = new ShapeRenderer();
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(itemSelectedColor);
+                shapeRenderer.rect(coords[0], coords[1], coords[2], coords[3]);
+                shapeRenderer.end();
+            }
+        }
+
 
             public void mooveCharacter(Character character, Sprite sprite) {
                 sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());

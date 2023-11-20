@@ -133,8 +133,8 @@ public class Room {
 
     public List<Tile> createMap(int roomLevel, int width, int height) {
         List<Tile> tiles = new ArrayList<>();
-        TileDisplay border = new TileDisplay(true, false, TextureType.LAVA_DUNGEON);
-        TileDisplay wall = new TileDisplay(false, false, TextureType.LAVA_DUNGEON);
+        TileDisplay border = new TileDisplay(true, false, TextureType.CHILL_OUTSIDE);
+        TileDisplay wall = new TileDisplay(false, false, TextureType.CHILL_OUTSIDE);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if ((i == 0) || (j % height == 0) || (j % width == width-1 )|| (i % height == height-1)) {
@@ -157,7 +157,7 @@ public class Room {
 //        TODO : room level management change texture*
         List<Tile> path = PathFinding.findAPath(this, begin, end);
         for (Tile tile : path) {
-            tile.setTileDisplay(new TileDisplay(false, true, TextureType.LAVA_DUNGEON));
+            tile.setTileDisplay(new TileDisplay(false, true, TextureType.CHILL_OUTSIDE));
 
         }
     }
