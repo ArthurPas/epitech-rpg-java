@@ -1,14 +1,20 @@
 package com.mygdx.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
 import com.mygdx.item.Weapon;
 
 import java.util.Map;
 
-public class Character {
+public class Character  extends InputAdapter {
     private String name;
     private Map<Stat, Integer> stat;
+
+    private int x;
+    private int y;
 
     private String pathToAsset;
 
@@ -33,17 +39,39 @@ public class Character {
     }
 
     public boolean isDead(){
+
         return this.getStat().get(Stat.HP) <= 0;
     }
 
     private boolean isInFight;
 
+    public int getX(){
+        return x;
+    }
+    public int getY(){
+        return y;
+    }
     public Tile getPosition() {
         return position;
     }
 
     public void setPosition(Tile position) {
         this.position = position;
+        this.x = position.getX();
+        this.y = position.getY();
+    }
+    public void setPosition(int x, int y, Room room){
+        this.x = x;
+        this.y = y;
+        this.position = room.getSpecificTile(x,y);
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public Character(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position) {
@@ -113,6 +141,8 @@ public class Character {
     public int attack(Character character) {
         int critMultiplicator = 1;
         if ((int) (Math.random() * 100) <= getStat().get(Stat.AGILITY)*weaponEquiped.getCriticalStrikeProb()) {
+
+
             System.out.println("Critical strike");
             critMultiplicator = 2;
         }
@@ -121,7 +151,9 @@ public class Character {
             return 0;
         } else {
             int dammage = (int) (getStat().get(Stat.STRENGTH) * weaponEquiped.getDamage() * critMultiplicator);
+
             System.out.println("dammage = " + dammage);
+
             System.out.println("old HP of "+ character.getName()+"= " + character.getStat().get(Stat.HP));
 
             character.changeStat(Stat.HP, -dammage);

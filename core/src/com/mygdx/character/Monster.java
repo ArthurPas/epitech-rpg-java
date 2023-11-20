@@ -1,5 +1,7 @@
 package com.mygdx.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.Game;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.Tile;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Monster extends Character {
+    private boolean deathSoundPlayed = false;
     private  float dropWeaponProb;
     private float vivacity;
 
@@ -60,4 +63,25 @@ public class Monster extends Character {
     public void setPathToAsset(String pathToAsset) {
         this.pathToAsset = pathToAsset;
     }
+
+
+    @Override
+    public int attack(Character character) {
+         Sound monsterAttack = Gdx.audio.newSound(Gdx.files.internal("soundEffects/heroHurt.wav"));
+            monsterAttack.play(1.0f);
+        return super.attack(character);
+
+    }
+
+    @Override
+    public boolean isDead() {
+        if (!deathSoundPlayed ) {
+            Sound doorOpenedAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/doorOpened.ogg"));
+            doorOpenedAudio.play(1.0f);
+            deathSoundPlayed = true; //
+        }
+        return super.isDead();
+    }
 }
+
+

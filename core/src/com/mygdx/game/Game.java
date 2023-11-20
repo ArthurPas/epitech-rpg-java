@@ -61,9 +61,8 @@ public class Game {
             //TODO : implement with real monster stats depending on room and difficulty
             stats.put(Stat.STRENGTH, 1);
             stats.put(Stat.AGILITY, 10);
-            stats.put(Stat.HP, 80);
-
-            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0, "item/weapon/sword22.png"), null, 0, 0.7f);
+            stats.put(Stat.HP, 1);
+            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 10, 1, 0, "item/weapon/sword22.png"), null, 0, 0.7f);
             System.out.println(Monster.indexMonster);
             Room room = new Room(10, 10, monster);
             monster.setPosition(room.getExitTile());
@@ -90,7 +89,7 @@ public class Game {
 
     public List<Tile> play(Room room) {
         Map<Stat, Integer> stat = new HashMap<>();
-        stat.put(Stat.HP, 200);
+        stat.put(Stat.HP, 100);
         stat.put(Stat.STRENGTH, 1);
         stat.put(Stat.AGILITY, 10);
         room.displayRandomPath(room.getEntry(), room.getExitTile(), 1);
@@ -100,13 +99,15 @@ public class Game {
     public Room nextRoom(Room oldRoom) {
         if (rooms.indexOf(oldRoom) == rooms.size() - 1) {
             isWin = true;
+
             return null;
         }
         Room nextRoom = rooms.get(rooms.indexOf(oldRoom) + 1);
         Map<Stat, Integer> devMonsterStat = new HashMap<>();
         devMonsterStat.put(Stat.STRENGTH, 10);
         devMonsterStat.put(Stat.AGILITY, 1);
-        devMonsterStat.put(Stat.HP, 10);
+        devMonsterStat.put(Stat.HP, 100);
         return nextRoom;
     }
+
 }

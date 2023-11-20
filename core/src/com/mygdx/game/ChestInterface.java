@@ -154,8 +154,6 @@ public class ChestInterface {
         Vector3 worldCoordinates = camera.unproject(new Vector3(mouseX, mouseY, 0));
         int mouseXWorld = (int) worldCoordinates.x;
         int mouseYWorld = (int) worldCoordinates.y;
-
-
         // iterate on all sprite for buy weapon
         for (Sprite itemSprite : spritesBuy) {
             //look if the click was on one of them
