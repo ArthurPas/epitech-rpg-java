@@ -1,18 +1,16 @@
 package com.mygdx.character;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
-import com.mygdx.game.Tile;
+import com.mygdx.interfaces.Tile;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 import com.mygdx.item.equipment.Agility;
 import com.mygdx.item.equipment.Attack;
 import com.mygdx.item.equipment.Defense;
-import com.mygdx.item.equipment.Equipment;
 
 import java.util.ArrayList;
 import java.util.HashMap;

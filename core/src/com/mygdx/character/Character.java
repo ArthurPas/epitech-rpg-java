@@ -1,10 +1,8 @@
 package com.mygdx.character;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
-import com.mygdx.game.Tile;
+import com.mygdx.interfaces.Tile;
 import com.mygdx.item.Weapon;
 
 import java.util.Map;

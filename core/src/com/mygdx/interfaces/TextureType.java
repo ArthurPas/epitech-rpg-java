@@ -1,4 +1,4 @@
-package com.mygdx.game.room;
+package com.mygdx.interfaces;
 
 public enum TextureType {
     LAVA_DUNGEON,

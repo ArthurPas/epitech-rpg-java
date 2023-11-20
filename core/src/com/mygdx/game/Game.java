@@ -3,17 +3,12 @@ package com.mygdx.game;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
-import com.mygdx.game.Tile;
+import com.mygdx.interfaces.Tile;
 import com.mygdx.game.room.Room;
-import com.mygdx.item.Chest;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 
-import java.io.File;
-
-import java.io.File;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

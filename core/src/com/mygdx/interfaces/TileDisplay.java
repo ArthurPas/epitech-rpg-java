@@ -1,6 +1,4 @@
-package com.mygdx.game;
-
-import com.mygdx.game.room.TextureType;
+package com.mygdx.interfaces;
 
 public class TileDisplay {
 
