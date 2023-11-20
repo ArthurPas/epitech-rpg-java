@@ -1,6 +1,8 @@
 package com.mygdx.game.room;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.character.Monster;
 import com.mygdx.interfaces.TextureType;
 import com.mygdx.interfaces.TileDisplay;
@@ -8,6 +10,7 @@ import com.mygdx.utils.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Room {
@@ -21,6 +24,7 @@ public class Room {
     private Monster monster;
 
     private Tile chestTile;
+    Sprite potion;
 
 
     public Tile getExitTile() {
@@ -35,6 +39,8 @@ public class Room {
         this.relativeWidth = Gdx.graphics.getHeight() / width;
         this.relativeHeight = Gdx.graphics.getWidth() / height;
         this.tiles = createMap(1, width, height);
+        this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
+        this.potion = new Sprite(new Texture("item/supplies/bigPotion.png"));
     }
 
     public Monster getMonster() {
@@ -204,5 +210,41 @@ public class Room {
 
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public void generateAPotion() {
+        Tile tilePotion = getEntry();
+        int n = (int) (Math.random() * 2);
+        switch (n) {
+            case 1:
+                potion = new Sprite(new Texture("item/supplies/bigPotion.png"));
+                break;
+            case 2:
+                 potion = new Sprite(new Texture("item/supplies/potion.png"));
+                break;
+        }
+
+        potion.setPosition(tilePotion.getX(), tilePotion.getY());
+        potion.setSize(relativeWidth ,relativeHeight);
+        setPotion(potion);
+
+    }
+    public Tile findTilePotion(Tile entry){
+        for(Tile tile: getNeighbors(entry,100)){
+            System.out.println(tile);
+            if(tile.getTileDisplay().isWalkable() && !tile.getTileDisplay().isBorder()){
+
+               return tile;
+            }
+        }
+        return getEntry();
+    }
+
+    public Sprite getPotion() {
+        return potion;
+    }
+
+    public void setPotion(Sprite potion) {
+        this.potion = potion;
     }
 }

@@ -45,6 +45,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     int dammageDeal;
     Sprite heroSprite;
     Sprite monsterSprite;
+
+    Sprite littlePotion;
+    Sprite bigPotion;
     List<Sprite> chestSprites;
     List<Sprite> itemsSprites;
 
@@ -131,7 +134,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
             @Override
             public boolean keyDown(int keycode) {
-
                 switch (keycode) {
                     case Input.Keys.W:
                         up = true;
@@ -152,8 +154,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                     default:
                         System.out.println("not the right key");
                 }
-                Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
-                footStepAudio.play(1.0f);
+
+
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
                 return true;
             }
@@ -190,7 +192,12 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
+            //            Sprite bigPotion = new Sprite(new Texture("item/supplies/bigPotion.png"));
+            //            Sprite littlePotion = new Sprite(new Texture("item/supplies/smallPotion.png"));
+
         }
+        actualRoom.getPotion().draw(batch);
+
     }
 
     @Override
@@ -200,7 +207,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         Gdx.input.setInputProcessor(inputAdapter);
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
-
         heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         heroSprite.setPosition(player.getX(), player.getY());
 
