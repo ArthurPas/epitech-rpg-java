@@ -180,8 +180,4 @@ public class Room {
     public void setChestTile(Tile chestTile) {
         this.chestTile = chestTile;
     }
-
-    public boolean isTileWalkable(float newX, float newY) {
-        return false;
-    }
 }
