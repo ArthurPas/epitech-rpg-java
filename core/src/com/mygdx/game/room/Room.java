@@ -192,7 +192,7 @@ public class Room {
     public Tile getChestTileAfterFight(Tile fightTile) {
         List<Tile> tiles = getNeighbors(fightTile, 1);
         for (Tile tile : tiles) {
-            if (tile.getTileDisplay().isWalkable() && !tile.getTileDisplay().isBorder()) {
+            if (tile.getTileDisplay().isWalkable()) {
                 return tile;
             }
         }
