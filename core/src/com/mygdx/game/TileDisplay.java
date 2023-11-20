@@ -90,6 +90,16 @@ public class TileDisplay {
         return texturePath;
     }
 
+    @Override
+    public String toString() {
+        return "TileDisplay{" +
+                "isBorder=" + isBorder +
+                ", isWalkable=" + isWalkable +
+                ", texturePath='" + texturePath + '\'' +
+                ", textureType=" + textureType +
+                '}';
+    }
+
     public void setTexturePath(String texturePath) {
         this.texturePath = texturePath;
     }

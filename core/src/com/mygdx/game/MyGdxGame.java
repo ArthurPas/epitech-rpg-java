@@ -42,6 +42,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     int dammageDeal;
     Sprite heroSprite;
     Sprite monsterSprite;
+
+    Sprite littlePotion;
+    Sprite bigPotion;
     List<Sprite> chestSprites;
     List<Sprite> itemsSprites;
 
@@ -80,6 +83,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
         itemsSprites = chestInterface.getItemSprites();
+
+
+
+
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
@@ -101,32 +108,38 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
             @Override
             public boolean keyDown(int keycode) {
-                int speed = 75;
+                Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
+                int speed = actualRoom.getRelativeWidth()/2;
                 int newX = player.getX();
                 int newY = player.getY();
 
                 switch (keycode) {
+
                     case Input.Keys.W:
                         player.move(actualRoom, newX, newY, newX, newY + speed);
+                        footStepAudio.play(1.0f);
                         break;
 
                     case Input.Keys.A:
-//                            newX -= speed;
+//
                         player.move(actualRoom, newX, newY, newX - speed, newY);
+                        footStepAudio.play(1.0f);
                         break;
                     case Input.Keys.S:
-//                                newY -= speed;
+//
                         player.move(actualRoom, newX, newY, newX, newY - speed);
+                        footStepAudio.play(1.0f);
                         break;
                     case Input.Keys.D:
-//                                    newX += speed;
+//
                         player.move(actualRoom, newX, newY, newX + speed, newY);
+                        footStepAudio.play(1.0f);
                         break;
                     default:
                         System.out.println("not the right key");
                 }
-                Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));
-                footStepAudio.play(1.0f);
+
+
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
                 return true;
             }
@@ -138,7 +151,12 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
+            //            Sprite bigPotion = new Sprite(new Texture("item/supplies/bigPotion.png"));
+            //            Sprite littlePotion = new Sprite(new Texture("item/supplies/smallPotion.png"));
+
         }
+        actualRoom.getPotion().draw(batch);
+
     }
     @Override
     public void render() {
@@ -147,7 +165,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         Gdx.input.setInputProcessor(inputAdapter);
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
-
         heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         heroSprite.setPosition(player.getX(), player.getY());
 

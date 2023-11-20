@@ -66,6 +66,7 @@ public class Game {
             System.out.println(Monster.indexMonster);
             Room room = new Room(10, 10, monster);
             monster.setPosition(room.getExitTile());
+            room.generateAPotion();
             rooms.add(room);
         }
         return rooms;
