@@ -150,9 +150,6 @@ public class Player extends Character implements InputProcessor {
         }
     }
 
-    public void pay(int money) {
-        setMoney(getMoney() - money);
-    }
 
     public void removeItem(Item item) {
         inventory.remove(item);

@@ -12,7 +12,11 @@ import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
 import com.mygdx.game.room.Room;
 import com.mygdx.item.Chest;
+import com.mygdx.item.Item;
+import com.mygdx.item.Rarity;
+import com.mygdx.item.Weapon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -97,7 +101,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
             @Override
             public boolean keyDown(int keycode) {
-                int speed = 50;
+                int speed = 75;
                 int newX = player.getX();
                 int newY = player.getY();
 
@@ -134,7 +138,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
             sprite.setPosition(tile.getX(), tile.getY());
             sprite.draw(batch);
-                }
+        }
+    }
     @Override
     public void render() {
         batch.begin();
@@ -225,26 +230,15 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         }
 
-        if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(),1).contains(player.getPosition())) {
+        if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
             monsterDiedAudioPlayed = false;
         }
-        List<Weapon> weaponsToSell = new ArrayList<>();
-        weaponsToSell.add(new Weapon("test", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
-        weaponsToSell.add(new Weapon("test2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword22.png"));
-        weaponsToSell.add(new Weapon("test3", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword25.png"));
-        List<Item> weaponsToBuy = new ArrayList<>();
-        weaponsToBuy.add(new Weapon("myWeapon1", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword24.png"));
-        weaponsToBuy.add(new Weapon("myWeapon2", 10, Rarity.RARE, 10, 10, 10f, 10, "item/weapon/sword8.png"));
-
-        player.setInventory(weaponsToBuy);
-        testChestInterface = new ChestInterface(weaponsToSell, player, batch, 2);
-
         //TODO: implement the chest interaction in game (set true for dev mode)
-        player.setInChest(true);
+        player.setInChest(false);
         if (player.isInChest()) {
             for (Sprite allChestSprite : chestSprites) {
                 allChestSprite.draw(batch);
@@ -263,8 +257,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 shapeRenderer.end();
             }
         }
-
-
+        batch.end();
+    }
             public void mooveCharacter(Character character, Sprite sprite) {
                 sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
                 sprite.setPosition(character.getPosition().getX(), character.getPosition().getY());
