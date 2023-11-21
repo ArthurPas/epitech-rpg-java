@@ -1,6 +1,7 @@
 package com.mygdx.interfaces;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -47,6 +48,9 @@ public class ChestInterface {
     float startX;
     float startY;
     final int MARGIN_COIN = 20;
+
+    Sound moneySound = Gdx.audio.newSound(Gdx.files.internal("soundEffects/money.wav"));
+    Sound selectStuff = Gdx.app.getAudio().newSound(Gdx.files.internal("soundEffects/selectStuff.mp3"));
 
     public ChestInterface(Player player, SpriteBatch batch, int weaponNb, Chest chest) {
         this.chest = chest;
@@ -154,12 +158,18 @@ public class ChestInterface {
         Vector3 worldCoordinates = camera.unproject(new Vector3(mouseX, mouseY, 0));
         int mouseXWorld = (int) worldCoordinates.x;
         int mouseYWorld = (int) worldCoordinates.y;
-        // iterate on all sprite for buy weapon
+        // iterate on all sprite for buy weapon if(player.isInChest()){
+        //                selectStuff.play(1.0f);
+        //            }
         for (Sprite itemSprite : spritesBuy) {
+
             //look if the click was on one of them
             if (isIn((int) itemSprite.getX(), (int) itemSprite.getY(), mouseXWorld, mouseYWorld, (int) itemSprite.getWidth(), (int) itemSprite.getHeight())) {
                 //and set itemSelected with the map<Sprite,Item>
                 itemSelected = linkItemsSprite.get(itemSprite);
+                if(player.isInChest()){
+                    selectStuff.play(1.0f);
+                }
                 //set also the sprite selected
                 setSpriteSelected(itemSprite);
             }
@@ -168,6 +178,9 @@ public class ChestInterface {
         for (Sprite sellItemSprite : spritesSell) {
             if (isIn((int) sellItemSprite.getX(), (int) sellItemSprite.getY(), mouseXWorld, mouseYWorld, (int) sellItemSprite.getWidth(), (int) sellItemSprite.getHeight())) {
                 System.out.println("you clicked on weapons to sell");
+                if(player.isInChest()){
+                    selectStuff.play(1.0f);
+                }
                 itemSelected = linkItemsSprite.get(sellItemSprite);
                 setSpriteSelected(sellItemSprite);
                 return true;
@@ -176,12 +189,16 @@ public class ChestInterface {
 
         if (isIn((int) buyButton.getX(), (int) buyButton.getY(), mouseXWorld, mouseYWorld, (int) buyButton.getWidth(), (int) buyButton.getHeight())) {
             System.out.println("you clicked on buyButton");
+            if(player.isInChest()){
+                moneySound.play(1.0f);
+            }
             Item item = getItemSelected();
             if (item == null) {
                 return false;
             }
             if (player.pay(item.getCost())) {
                 System.out.println("inv bef" + this.player.getInventory());
+
                 this.player.addItem(item);
                 this.chest.removeItem(item);
                 setSpriteSelected(null);
@@ -197,6 +214,9 @@ public class ChestInterface {
 
                         getX(), (int) sellButton.getY(), mouseXWorld, mouseYWorld, (int) sellButton.getWidth(), (int) sellButton.getHeight())) {
             System.out.println("you clicked on sellButton");
+            if(player.isInChest()){
+                moneySound.play(1.0f);
+            }
             Item item = getItemSelected();
             if (item == null) {
                 return false;
