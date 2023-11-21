@@ -1,15 +1,13 @@
 package com.mygdx.character;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
-import com.mygdx.game.Tile;
+import com.mygdx.interfaces.Tile;
 import com.mygdx.item.Weapon;
 
 import java.util.Map;
 
-public class Character  extends InputAdapter {
+public class Character extends InputAdapter {
     private String name;
     private Map<Stat, Integer> stat;
 
@@ -38,19 +36,20 @@ public class Character  extends InputAdapter {
         isInFight = inFight;
     }
 
-    public boolean isDead(){
-
+    public boolean isDead() {
         return this.getStat().get(Stat.HP) <= 0;
     }
 
     private boolean isInFight;
 
-    public int getX(){
+    public int getX() {
         return x;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
+
     public Tile getPosition() {
         return position;
     }
@@ -60,10 +59,11 @@ public class Character  extends InputAdapter {
         this.x = position.getX();
         this.y = position.getY();
     }
-    public void setPosition(int x, int y, Room room){
+
+    public void setPosition(int x, int y, Room room) {
         this.x = x;
         this.y = y;
-        this.position = room.getSpecificTile(x,y);
+        this.position = room.getSpecificTile(x, y);
     }
 
     public void setX(int x) {
@@ -103,7 +103,10 @@ public class Character  extends InputAdapter {
     }
 
     public void setStat(Stat stat, int value) {
-        this.stat.put(stat, value);
+        if (this.stat.get(stat) < 1) {
+            this.stat.put(stat, 1);
+        } else
+            this.stat.put(stat, value);
     }
 
     public Weapon getWeaponEquiped() {
@@ -123,9 +126,9 @@ public class Character  extends InputAdapter {
 
 
     public int calculateLifeDividedBy4() {
-        if(this.getStat().get(Stat.HP) <= 0){
+        if (this.getStat().get(Stat.HP) <= 0) {
             return 0;
-        }else if (this.getStat().get(Stat.HP) <= 25) {
+        } else if (this.getStat().get(Stat.HP) <= 25) {
             return 1;
         } else if (this.getStat().get(Stat.HP) <= 50) {
             return 2;
@@ -140,13 +143,13 @@ public class Character  extends InputAdapter {
     //TODO : add an miss by luck exception for pretty print
     public int attack(Character character) {
         int critMultiplicator = 1;
-        if ((int) (Math.random() * 100) <= getStat().get(Stat.AGILITY)*weaponEquiped.getCriticalStrikeProb()) {
+        if ((int) (Math.random() * 100) <= getStat().get(Stat.AGILITY) * weaponEquiped.getCriticalStrikeProb()) {
 
 
             System.out.println("Critical strike");
             critMultiplicator = 2;
         }
-        if ((int) (Math.random() * 100) <= 100*weaponEquiped.getCriticalFailureProb()) {
+        if ((int) (Math.random() * 100) <= 100 * weaponEquiped.getCriticalFailureProb()) {
             System.out.println("missed");
             return 0;
         } else {
@@ -154,10 +157,10 @@ public class Character  extends InputAdapter {
 
             System.out.println("dammage = " + dammage);
 
-            System.out.println("old HP of "+ character.getName()+"= " + character.getStat().get(Stat.HP));
+            System.out.println("old HP of " + character.getName() + "= " + character.getStat().get(Stat.HP));
 
             character.changeStat(Stat.HP, -dammage);
-            System.out.println("new HP of "+ character.getName()+"= " + character.getStat().get(Stat.HP));
+            System.out.println("new HP of " + character.getName() + "= " + character.getStat().get(Stat.HP));
             return dammage;
         }
 
