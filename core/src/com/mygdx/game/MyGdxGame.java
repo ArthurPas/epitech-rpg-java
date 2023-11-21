@@ -68,7 +68,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean moveTop = false;
     boolean moveBottom = false;
     InputAdapter inputAdapter;
-    public boolean moneyWon = false;
     FreeTypeFontGenerator generator;
     MenuInterface menu;
 
