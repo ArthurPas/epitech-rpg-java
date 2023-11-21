@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.room.Room;
-import com.mygdx.interfaces.Tile;
+import com.mygdx.game.room.Tile;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;

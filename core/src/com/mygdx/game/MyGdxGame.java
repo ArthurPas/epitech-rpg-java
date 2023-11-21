@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +14,8 @@ import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
 import com.mygdx.game.room.Room;
 import com.mygdx.interfaces.ChestInterface;
-import com.mygdx.interfaces.Tile;
+import com.mygdx.game.room.Tile;
+import com.mygdx.interfaces.MenuInterface;
 import com.mygdx.item.*;
 
 import java.util.ArrayList;
@@ -162,6 +162,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         batch.begin();
         drawFloor();
         Gdx.input.setInputProcessor(inputAdapter);
+        MenuInterface menu = new MenuInterface(player, batch);
+        menu.draw();
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
 

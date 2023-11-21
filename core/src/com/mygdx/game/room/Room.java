@@ -3,7 +3,6 @@ package com.mygdx.game.room;
 import com.badlogic.gdx.Gdx;
 import com.mygdx.character.Monster;
 import com.mygdx.interfaces.TextureType;
-import com.mygdx.interfaces.Tile;
 import com.mygdx.interfaces.TileDisplay;
 import com.mygdx.utils.PathFinding;
 

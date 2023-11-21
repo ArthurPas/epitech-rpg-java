@@ -1,6 +1,6 @@
-package com.mygdx.interfaces;
+package com.mygdx.game.room;
 
-import com.mygdx.game.room.Room;
+import com.mygdx.interfaces.TileDisplay;
 
 import java.util.Objects;
 
