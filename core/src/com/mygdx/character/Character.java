@@ -2,7 +2,7 @@ package com.mygdx.character;
 
 import com.badlogic.gdx.InputAdapter;
 import com.mygdx.game.room.Room;
-import com.mygdx.interfaces.Tile;
+import com.mygdx.game.room.Tile;
 import com.mygdx.item.Weapon;
 
 import java.util.Map;

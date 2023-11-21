@@ -140,7 +140,7 @@ public class ChestInterface {
 
     }
 
-    public boolean isIn(int x, int y, int mouseX, int mouseY, int width, int height) {
+    public static boolean isIn(int x, int y, int mouseX, int mouseY, int width, int height) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 

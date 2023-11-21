@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
-import com.mygdx.interfaces.Tile;
+import com.mygdx.game.room.Tile;
 import com.mygdx.game.room.Room;
 import com.mygdx.item.Item;
 import com.mygdx.item.Rarity;
@@ -41,10 +41,11 @@ public class Game {
 
     public Game(int difficulty) {
         this.rooms = createsAllRooms(difficulty);
-        this.player = new Player(0, null, 25, null);
+        player = new Player(1, null, 25, null);
         List<Item> stuff = new ArrayList<>();
-        stuff.add(new Weapon("testForDev", 1, Rarity.COMMON, 10, 5, 10, 0, "item/weapon/sword22.png"));
-        this.player.setInventory(stuff);
+        stuff.add(new Weapon("testForDev4", 1, Rarity.COMMON, 10, 5, 10, 0, "item/weapon/sword22.png"));
+        player.setInventory(stuff);
+        player.setWeaponEquiped((Weapon) stuff.get(0));
         this.difficulty = difficulty;
 
     }

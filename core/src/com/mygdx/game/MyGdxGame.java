@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +14,8 @@ import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
 import com.mygdx.game.room.Room;
 import com.mygdx.interfaces.ChestInterface;
-import com.mygdx.interfaces.Tile;
+import com.mygdx.game.room.Tile;
+import com.mygdx.interfaces.MenuInterface;
 import com.mygdx.item.*;
 
 import java.util.ArrayList;
@@ -69,6 +69,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     InputAdapter inputAdapter;
     public boolean moneyWon = false;
     FreeTypeFontGenerator generator;
+    MenuInterface menu;
 
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -87,11 +88,16 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         monster = actualRoom.getMonster();
         monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+
         chest = new Chest(actualRoom.getRoomNumber(), 10);
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
         itemsSprites = chestInterface.getItemSprites();
+
+        menu = new MenuInterface(player, batch);
+
         generator = new FreeTypeFontGenerator(Gdx.files.internal("hpFont.ttf"));
+
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -109,11 +115,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
-                if (chestInterface.handleClick(x, y)) {
+                if (player.isInChest() && chestInterface.handleClick(x, y)) {
                     itemsSprites = chestInterface.getItemSprites();
                     itemSelectedColor = Color.GREEN;
                 } else {
                     itemSelectedColor = Color.RED;
+                }
+                if (player.isInMenu()) {
+                    menu.handleClick(x, Gdx.graphics.getHeight() - y);
                 }
                 chestSprites = chestInterface.displayChestInterface();
                 return true;
@@ -138,6 +147,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                         break;
                     case Input.Keys.D:
                         player.move(actualRoom, newX, newY, newX + speed, newY);
+                        break;
+                    case Input.Keys.I:
+                        player.setInMenu(!player.isInMenu());
                         break;
                     default:
                         System.out.println("not the right key");
@@ -308,6 +320,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 shapeRenderer.rect(coords[0], coords[1], coords[2], coords[3]);
                 shapeRenderer.end();
             }
+        }
+        if (player.isInMenu()) {
+            menu.draw();
         }
         batch.end();
     }
