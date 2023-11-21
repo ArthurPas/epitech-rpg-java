@@ -71,6 +71,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     FreeTypeFontGenerator generator;
     MenuInterface menu;
 
+    boolean up, down, left, right;
+
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
@@ -111,6 +113,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 , monster.getVivacity() //    (seconds)
         );
         inputAdapter = new InputAdapter() {
+
             @Override
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
@@ -130,23 +133,20 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
             @Override
             public boolean keyDown(int keycode) {
-                int speed = actualRoom.getRelativeWidth() / 2;
-                int newX = player.getX();
-                int newY = player.getY();
 
                 switch (keycode) {
                     case Input.Keys.W:
-                        player.move(actualRoom, newX, newY, newX, newY + speed);
+                        up = true;
                         break;
 
                     case Input.Keys.A:
-                        player.move(actualRoom, newX, newY, newX - speed, newY);
+                        left = true;
                         break;
                     case Input.Keys.S:
-                        player.move(actualRoom, newX, newY, newX, newY - speed);
+                        down = true;
                         break;
                     case Input.Keys.D:
-                        player.move(actualRoom, newX, newY, newX + speed, newY);
+                        right = true;
                         break;
                     case Input.Keys.I:
                         player.setInMenu(!player.isInMenu());
@@ -159,7 +159,31 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
                 return true;
             }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                        up = false;
+
+                        break;
+                    case Input.Keys.A:
+                        left = false;
+                        break;
+                    case Input.Keys.S:
+                        down = false;
+                        break;
+                    case Input.Keys.D:
+                        right = false;
+
+                        break;
+                    default:
+                        break;
+                }
+                return super.keyUp(keycode);
+            }
         };
+
     }
 
     public void drawFloor() {
@@ -221,13 +245,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 attacker = !attacker;
             }
         }
+        mooveCharacter();
         //TODO loose and win management
         if (monster.isDead()) {
             int money = 10;
-            if ( !moneyWon) {
+            if (!moneyWon) {
                 System.out.println("vous avez  " + player.getMoney());
                 int moneyEarned = money + money * (actualRoom.getRoomNumber() / 3);
-                player.addMoney(moneyEarned) ;
+                player.addMoney(moneyEarned);
                 System.out.println("vous etes dans la salle " + actualRoom.getRoomNumber());
                 moneyWon = true;
                 System.out.println("vous avez obtenu : " + moneyEarned + " vous avez maitenant " + player.getMoney());
@@ -327,10 +352,23 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         batch.end();
     }
 
-    public void mooveCharacter(Character character, Sprite sprite) {
-        sprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
-        sprite.setPosition(character.getPosition().getX(), character.getPosition().getY());
-        sprite.draw(batch);
+    public void mooveCharacter() {
+
+        int speed = actualRoom.getRelativeWidth() / 8;
+        int newX = player.getX();
+        int newY = player.getY();
+        if (up) {
+            player.move(actualRoom, newX, newY, newX, newY + speed);
+        }
+        if (down) {
+            player.move(actualRoom, newX, newY, newX, newY - speed);
+        }
+        if (left) {
+            player.move(actualRoom, newX, newY, newX - speed, newY);
+        }
+        if (right) {
+            player.move(actualRoom, newX, newY, newX + speed, newY);
+        }
     }
 
     public void fightHistory() {
