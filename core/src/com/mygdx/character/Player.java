@@ -78,8 +78,7 @@ public class Player extends Character implements InputProcessor {
 
     public void move(Room room, Tile actualPosition, int xMouse, int yMouse) {
         Tile tileClicked = room.getSpecificTile(xMouse, yMouse);
-        System.out.println(tileClicked);
-        System.out.println(tileClicked.getX() + " " + tileClicked.getY());
+
 
         if (actualPosition.isNeighbor(room, tileClicked) && tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(tileClicked);
@@ -107,8 +106,6 @@ public class Player extends Character implements InputProcessor {
 
         if (tileClicked.getTileDisplay().isWalkable() && !isInFight() && !isDead()) {
             setPosition(mooveX, mooveY, room);
-            System.out.println("cc" + this.getX());
-            System.out.println("ccc" + this.getY());
         }
         if (mooveX > actualX) {
             System.out.println("right position");
