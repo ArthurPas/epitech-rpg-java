@@ -174,21 +174,23 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
-        FreeTypeFontGenerator.FreeTypeFontParameter parameterMonster = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-        parameterMonster.color = Color.RED;
-        parameterMonster.size = 25 + monster.getStat().get(Stat.HP);
-        BitmapFont fontMonster = generator.generateFont(parameterMonster);
-        if (!monster.isDead()) {
-            fontMonster.draw(batch, String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() - actualRoom.getRelativeWidth() / 2, monster.getPosition().getY() + actualRoom.getRelativeHeight());
-        }
         if (player.isInFight()) {
-            fightHistory();
             if (!youWillDieAudioPlayed) {
                 Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
                 youwillDieAudio.play(1.0f);
                 youWillDieAudioPlayed = true;
             }
+            FreeTypeFontGenerator.FreeTypeFontParameter parameterMonster = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            parameterMonster.color = Color.RED;
+            parameterMonster.size = 25 + monster.getStat().get(Stat.HP);
+            BitmapFont fontMonster = generator.generateFont(parameterMonster);
+            fontMonster.draw(batch, String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() - actualRoom.getRelativeWidth() / 2, monster.getPosition().getY() + actualRoom.getRelativeHeight());
+            FreeTypeFontGenerator.FreeTypeFontParameter paramaterPlayer = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            paramaterPlayer.size = 25;
+            BitmapFont fontPlayerHP = generator.generateFont(paramaterPlayer);
+            fontPlayerHP.draw(batch, String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX() - actualRoom.getRelativeWidth() / 2, player.getPosition().getY() + actualRoom.getRelativeHeight());
+
+
             Sprite heroLifeBar = new Sprite(new Texture("character/blueBar" + player.calculateLifeDividedBy4() + ".png"));
             Sprite monsterLifeBar = new Sprite(new Texture("character/redBar" + monster.calculateLifeDividedBy4() + ".png"));
 
@@ -204,14 +206,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 dammageDeal = fightRound(player, monster, attacker);
                 attacker = !attacker;
             }
-            FreeTypeFontGenerator.FreeTypeFontParameter paramaterPlayer = new FreeTypeFontGenerator.FreeTypeFontParameter();
-            paramaterPlayer.size = 25;
-            BitmapFont fontPlayerHP = generator.generateFont(paramaterPlayer);
-            fontPlayerHP.draw(batch, String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX() - actualRoom.getRelativeWidth() / 2, player.getPosition().getY() + actualRoom.getRelativeHeight());
         }
         //TODO loose and win management
         if (monster.isDead()) {
-            fightHistory();
             monsterSprite = new Sprite(new Texture("character/death.png"));
             monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
             monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
@@ -262,9 +259,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             //TODO : add a win screen
             System.out.println("You win");
 
-        }
-
-        if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
+        } else if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
+            player.setInChest(false);
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
             System.out.println(actualRoom.getRoomNumber());
@@ -328,16 +324,15 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     }
 
     public int fightRound(Character char1, Character char2, boolean isChar1) {
+        int damage;
         if (isChar1) {
-            int damage = char1.attack(char2);
+            damage = char1.attack(char2);
             playerAttacks.add(damage);
-            return damage;
-
         } else {
-            int damage = char2.attack(char1);
+            damage = char2.attack(char1);
             monsterAttacks.add(damage);
-            return damage;
         }
+        return damage;
     }
 
     public static int getActualRoomLevel() {
