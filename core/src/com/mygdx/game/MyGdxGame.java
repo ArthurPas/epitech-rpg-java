@@ -29,6 +29,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Animation<TextureRegion> animation;
     float elapsed;
     Player player;
+    public boolean moneyWon = false;
     Monster monster;
     Game game;
     ChestInterface chestInterface;
@@ -232,7 +233,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 moneyWon = true;
                 System.out.println("vous avez obtenu : " + moneyEarned + " vous avez maitenant " + player.getMoney());
             }
-
             monsterSprite = new Sprite(new Texture("character/death.png"));
             monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
             monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
@@ -288,6 +288,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             System.out.println("You win");
         } else if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
             player.setInChest(false);
+            moneyWon = false;
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
             System.out.println(actualRoom.getRoomNumber());
@@ -371,53 +372,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public static int getActualRoomLevel() {
         return actualRoom.getRoomNumber();
     }
-    //.sleep not working in render
-//    public Character fight(Character attacker, Character defender) {
-//        Sprite heroSprite = new Sprite(new Texture("character/hero.png"));
-//        Sprite monsterSprite = new Sprite(new Texture("character/monsters/goblin_9.png"));
-//        System.out.println("yo1");
-//
-//        timeSeconds += Gdx.graphics.getDeltaTime();
-//        if(timeSeconds > period){
-//            timeSeconds-=period;
-//            mooveCharacter(attacker, firstRoom.getFightsTiles().get(1), heroSprite);
-//            timeSeconds = 0f;
-//            period = 1f;
-//            timeSeconds += Gdx.graphics.getDeltaTime();
-//            if (timeSeconds > period) {
-//                timeSeconds -= period;
-//
-//                attacker.attack(defender);
-//                mooveCharacter(attacker, firstRoom.getFightsTiles().get(0), heroSprite);
-//                if (defender.getStat().get(Stat.HP) <= 0) {
-//                    return attacker;
-//                }
-//            }
-//        }
-//        mooveCharacter(defender, firstRoom.getFightsTiles().get(1), monsterSprite);
-//        timeSeconds = 0f;
-//        period = 1f;
-//        timeSeconds += Gdx.graphics.getDeltaTime();
-//        if (timeSeconds > period) {
-//            timeSeconds -= period;
-//            attacker.attack(defender);
-//            mooveCharacter(defender, firstRoom.getFightsTiles().get(2), monsterSprite);
-//            if (attacker.getStat().get(Stat.HP) <= 0) {
-//                return defender;
-//            }
-//        }
-//        return null;
-//    }
 
     @Override
     public void dispose() {
         batch.dispose();
-        /*
-        for (Tile tile : textures.keySet()) {
-            textures.get(tile).dispose();
-        }
-
-         */
     }
 }
 

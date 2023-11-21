@@ -38,7 +38,8 @@ public class Chest {
     public void setWeaponToSell(int roomNumber) {
         for (int i = 0; i < 4; i++) {
             //TODO real implementation of the weapon stats
-            Weapon weapon = new Weapon("Name",0,calculateRarity(roomNumber),10,10,10,10,Weapon.getRandomWeaponPath());;
+            Weapon weapon = new Weapon("Name", 0, calculateRarity(roomNumber), 10, 10, 10, 0.1f * roomNumber, Weapon.getRandomWeaponPath());
+            ;
             weapon.setCost(calculateCostByRarity(weapon.getRarity()));
             this.items.add(weapon);
         }
