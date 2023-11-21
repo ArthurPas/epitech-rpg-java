@@ -25,12 +25,15 @@ public class Player extends Character implements InputProcessor {
 
     private boolean isInChest;
 
+    private boolean isInMenu;
+
     public Player(int xpLevel, List<Item> inventory, int money, Tile position) {
         super("Player", basicStat(), new Weapon("Basic sword", 1, Rarity.COMMON, 100, 10, 4, 0, "item/weapon/sword8.png"), position);
         this.xpLevel = xpLevel;
         this.inventory = new ArrayList<>();
         this.money = money;
         this.isInChest = false;
+        this.isInMenu = true;
         setPathToAsset("character/heroFront.png");
     }
 
@@ -79,6 +82,13 @@ public class Player extends Character implements InputProcessor {
         return false;
     }
 
+    public boolean isInMenu() {
+        return isInMenu;
+    }
+
+    public void setInMenu(boolean inMenu) {
+        isInMenu = inMenu;
+    }
 
     Sound swordAttackAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/swordAttack.wav"));
     Sound footStepAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/footstep.wav"));

@@ -68,6 +68,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean moveBottom = false;
     InputAdapter inputAdapter;
     FreeTypeFontGenerator generator;
+    MenuInterface menu;
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
@@ -85,11 +86,16 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         monster = actualRoom.getMonster();
         monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
+
         chest = new Chest(actualRoom.getRoomNumber(), 10);
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
         itemsSprites = chestInterface.getItemSprites();
+
+        menu = new MenuInterface(player, batch);
+
         generator = new FreeTypeFontGenerator(Gdx.files.internal("hpFont.ttf"));
+
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -107,11 +113,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             public boolean touchDown(int x, int y, int pointer, int button) {
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
-                if (chestInterface.handleClick(x, y)) {
+                if (player.isInChest() && chestInterface.handleClick(x, y)) {
                     itemsSprites = chestInterface.getItemSprites();
                     itemSelectedColor = Color.GREEN;
                 } else {
                     itemSelectedColor = Color.RED;
+                }
+                if (player.isInMenu()) {
+                    menu.handleClick(x, Gdx.graphics.getHeight() - y);
                 }
                 chestSprites = chestInterface.displayChestInterface();
                 return true;
@@ -136,6 +145,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                         break;
                     case Input.Keys.D:
                         player.move(actualRoom, newX, newY, newX + speed, newY);
+                        break;
+                    case Input.Keys.I:
+                        player.setInMenu(!player.isInMenu());
                         break;
                     default:
                         System.out.println("not the right key");
@@ -162,8 +174,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         batch.begin();
         drawFloor();
         Gdx.input.setInputProcessor(inputAdapter);
-        MenuInterface menu = new MenuInterface(player, batch);
-        menu.draw();
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
 
@@ -292,6 +302,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 shapeRenderer.rect(coords[0], coords[1], coords[2], coords[3]);
                 shapeRenderer.end();
             }
+        }
+        if (player.isInMenu()) {
+            menu.draw();
         }
         batch.end();
     }
