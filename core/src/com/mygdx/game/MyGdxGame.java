@@ -68,8 +68,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean moveTop = false;
     boolean moveBottom = false;
     InputAdapter inputAdapter;
+    public boolean moneyWon = false;
     FreeTypeFontGenerator generator;
     MenuInterface menu;
+
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
@@ -223,10 +225,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         //TODO loose and win management
         if (monster.isDead()) {
             int money = 10;
-            if (!moneyWon) {
+            if ( !moneyWon) {
                 System.out.println("vous avez  " + player.getMoney());
                 int moneyEarned = money + money * (actualRoom.getRoomNumber() / 3);
-                player.addMoney(moneyEarned);
+                player.addMoney(moneyEarned) ;
                 System.out.println("vous etes dans la salle " + actualRoom.getRoomNumber());
                 moneyWon = true;
                 System.out.println("vous avez obtenu : " + moneyEarned + " vous avez maitenant " + player.getMoney());
@@ -235,6 +237,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
             monsterSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
             player.setInFight(false);
+
             actualRoom.setDoorOpen(monster.getPosition());
             Item dropedItem = monster.getDroped();
             if (dropedItem != null) {
@@ -250,6 +253,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             chestSprite.draw(batch);
             Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
             player.setInChest(actualRoom.getNeighbors(actualRoom.getChestTile(), 1).contains(player.getPosition()));
+            actualRoom.setDoorOpen(monster.getPosition());
+
             timeBeforeDeath += Gdx.graphics.getDeltaTime();
             if (timeBeforeDeath > deathDelay) {
                 if (!monsterDiedAudioPlayed) {
@@ -261,6 +266,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             youWillDieAudioPlayed = false;
 
         }
+
         if (player.isDead()) {
             heroSprite = new Sprite(new Texture("character/heroDied.png"));
             heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
@@ -280,7 +286,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         if (game.isWin()) {
             //TODO : add a win screen
             System.out.println("You win");
-
         } else if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
             player.setInChest(false);
             moneyWon = false;
@@ -294,6 +299,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             monster = actualRoom.getMonster();
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
             monsterDiedAudioPlayed = false;
+            moneyWon = false;
+            System.out.println(actualRoom);
+
         }
         //TODO: implement the chest interaction in game (set true for dev mode)
         if (player.isInChest()) {
