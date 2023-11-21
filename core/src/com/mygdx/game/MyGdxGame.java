@@ -1,20 +1,22 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.character.Character;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Player;
+import com.mygdx.character.Stat;
 import com.mygdx.game.room.Room;
-import com.mygdx.item.Chest;
-import com.mygdx.item.Item;
-import com.mygdx.item.Rarity;
-import com.mygdx.item.Weapon;
+import com.mygdx.interfaces.ChestInterface;
+import com.mygdx.interfaces.Tile;
+import com.mygdx.item.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     List<Sprite> chestSprites;
     List<Sprite> itemsSprites;
 
+    List<Integer> playerAttacks = new ArrayList<>();
+
+    List<Integer> monsterAttacks = new ArrayList<>();
     List<BitmapFont> itemsPrices = new CopyOnWriteArrayList<>();
     Chest chest;
 
@@ -62,7 +67,10 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean moveTop = false;
     boolean moveBottom = false;
     InputAdapter inputAdapter;
+    FreeTypeFontGenerator generator;
 
+    //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+//    BitmapFont fontHP;
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -81,6 +89,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
         itemsSprites = chestInterface.getItemSprites();
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("hpFont.ttf"));
+
         Timer.schedule(new Timer.Task() {
                            @Override
                            public void run() {
@@ -164,16 +174,27 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
 
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
-
         if (player.isInFight()) {
             if (!youWillDieAudioPlayed) {
                 Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
                 youwillDieAudio.play(1.0f);
                 youWillDieAudioPlayed = true;
             }
+            FreeTypeFontGenerator.FreeTypeFontParameter parameterMonster = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            parameterMonster.color = Color.RED;
+            parameterMonster.size = 25 + monster.getStat().get(Stat.HP);
+            BitmapFont fontMonster = generator.generateFont(parameterMonster);
+            fontMonster.draw(batch, String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() - actualRoom.getRelativeWidth() / 2, monster.getPosition().getY() + actualRoom.getRelativeHeight());
+            FreeTypeFontGenerator.FreeTypeFontParameter paramaterPlayer = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            paramaterPlayer.size = 25;
+            BitmapFont fontPlayerHP = generator.generateFont(paramaterPlayer);
+            fontPlayerHP.draw(batch, String.valueOf(player.getStat().get(Stat.HP)), player.getPosition().getX() - actualRoom.getRelativeWidth() / 2, player.getPosition().getY() + actualRoom.getRelativeHeight());
+
+
             Sprite heroLifeBar = new Sprite(new Texture("character/blueBar" + player.calculateLifeDividedBy4() + ".png"));
             Sprite monsterLifeBar = new Sprite(new Texture("character/redBar" + monster.calculateLifeDividedBy4() + ".png"));
-            heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() + actualRoom.getRelativeWidth());
+
+            heroLifeBar.setPosition(player.getPosition().getX(), player.getPosition().getY() + actualRoom.getRelativeHeight());
             monsterLifeBar.setPosition(monster.getPosition().getX(), monster.getPosition().getY() + actualRoom.getRelativeWidth());
             heroLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
             monsterLifeBar.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() / 2);
@@ -238,9 +259,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             //TODO : add a win screen
             System.out.println("You win");
 
-        }
-
-        if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
+        } else if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
+            player.setInChest(false);
             actualRoom = game.nextRoom(actualRoom);
             game.play(actualRoom);
             System.out.println(actualRoom.getRoomNumber());
@@ -280,13 +300,39 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         sprite.draw(batch);
     }
 
-    public int fightRound(Character char1, Character char2, boolean isChar1) {
-        if (isChar1) {
-            return char1.attack(char2);
+    public void fightHistory() {
+        FreeTypeFontGenerator.FreeTypeFontParameter parameterAttacks = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        } else {
-            return char2.attack(char1);
+        parameterAttacks.color = Color.WHITE;
+        parameterAttacks.size = 16;
+        BitmapFont fontAttacks = generator.generateFont(parameterAttacks);
+        BitmapFont fontName = generator.generateFont(parameterAttacks);
+        if (monsterAttacks != null && playerAttacks != null) {
+            int index = 0;
+            for (int att : monsterAttacks) {
+                fontName.draw(batch, monster.getName(), actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight() * (actualRoom.getHeight() - 2) - (index * actualRoom.getRelativeHeight() / 2));
+                fontAttacks.draw(batch, String.valueOf(att), (int) actualRoom.getRelativeWidth() * 2, actualRoom.getRelativeHeight() * (actualRoom.getHeight() - 2) - (index * actualRoom.getRelativeHeight() / 2));
+                index++;
+            }
+            index = 0;
+            for (int att : playerAttacks) {
+                fontName.draw(batch, player.getName(), actualRoom.getRelativeWidth() * 3, actualRoom.getRelativeHeight() * (actualRoom.getHeight() - 2) - (index * actualRoom.getRelativeHeight() / 2));
+                fontAttacks.draw(batch, String.valueOf(att), (int) actualRoom.getRelativeWidth() * 3 * 1.5f, actualRoom.getRelativeHeight() * (actualRoom.getHeight() - 2) - (index * actualRoom.getRelativeHeight() / 2));
+                index++;
+            }
         }
+    }
+
+    public int fightRound(Character char1, Character char2, boolean isChar1) {
+        int damage;
+        if (isChar1) {
+            damage = char1.attack(char2);
+            playerAttacks.add(damage);
+        } else {
+            damage = char2.attack(char1);
+            monsterAttacks.add(damage);
+        }
+        return damage;
     }
 
     public static int getActualRoomLevel() {

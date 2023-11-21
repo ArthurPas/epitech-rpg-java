@@ -5,9 +5,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.mygdx.game.Game;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.room.Room;
-import com.mygdx.game.Tile;
+import com.mygdx.interfaces.Tile;
 import com.mygdx.item.Item;
-import com.mygdx.item.Rarity;
 import com.mygdx.item.Weapon;
 import com.mygdx.item.equipment.Equipment;
 

@@ -2,14 +2,14 @@ package com.mygdx.game.room;
 
 import com.badlogic.gdx.Gdx;
 import com.mygdx.character.Monster;
-import com.mygdx.game.Tile;
-import com.mygdx.game.TileDisplay;
+import com.mygdx.interfaces.TextureType;
+import com.mygdx.interfaces.Tile;
+import com.mygdx.interfaces.TileDisplay;
 import com.mygdx.utils.PathFinding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.*;
 
 public class Room {
     private int width;

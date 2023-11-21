@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.interfaces;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -254,9 +254,9 @@ public class ChestInterface {
             spriteCost.setPosition(sprite.getX() - sprite.getWidth() / 4, (sprite.getY() - sprite.getHeight() / 4) - MARGIN_COIN);
             spriteCost.setSize(20, 20);
             spriteCost.draw(batch);
-            BitmapFont font12 = generator.generateFont(parameter);
-            font12.draw(batch, String.valueOf(item.getCost()), spriteCost.getX() + sprite.getWidth() / 2, spriteCost.getY() + font12.getLineHeight());
-            fonts.add(font12);
+            BitmapFont font = generator.generateFont(parameter);
+            font.draw(batch, String.valueOf(item.getCost()), spriteCost.getX() + sprite.getWidth() / 2, spriteCost.getY() + font.getLineHeight());
+            fonts.add(font);
             generator.dispose();
         }
         return fonts;
