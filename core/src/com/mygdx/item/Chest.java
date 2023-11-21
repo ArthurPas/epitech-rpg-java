@@ -12,7 +12,6 @@ public class Chest {
 
     public Chest(int roomNumber, int moneyAvailable) {
         setWeaponToSell(roomNumber);
-        System.out.println("coycou");
         this.moneyAvailable = moneyAvailable;
     }
 
