@@ -103,7 +103,13 @@ public class Character extends InputAdapter {
     }
 
     public void setStat(Stat stat, int value) {
-        if (this.stat.get(stat) < 1) {
+        if (stat.equals(Stat.HP)) {
+            if (value < this.stat.get(Stat.MAX_HP)) {
+                this.stat.put(Stat.HP, value);
+            } else {
+                this.stat.put(Stat.HP, this.stat.get(Stat.MAX_HP));
+            }
+        } else if (this.stat.get(stat) < 1) {
             this.stat.put(stat, 1);
         } else
             this.stat.put(stat, value);

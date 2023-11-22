@@ -1,13 +1,21 @@
 package com.mygdx.game.room;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.character.Monster;
+import com.mygdx.character.Stat;
 import com.mygdx.interfaces.TextureType;
 import com.mygdx.interfaces.TileDisplay;
+import com.mygdx.item.Supplies.BigPotion;
+import com.mygdx.item.Supplies.LittlePotion;
+import com.mygdx.item.Supplies.Potion;
 import com.mygdx.utils.PathFinding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Room {
@@ -21,6 +29,7 @@ public class Room {
     private Monster monster;
 
     private Tile chestTile;
+    Potion potion;
 
 
     public Tile getExitTile() {
@@ -35,6 +44,7 @@ public class Room {
         this.relativeWidth = Gdx.graphics.getHeight() / width;
         this.relativeHeight = Gdx.graphics.getWidth() / height;
         this.tiles = createMap(1, width, height);
+        this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
     }
 
     public Monster getMonster() {
@@ -170,10 +180,12 @@ public class Room {
     }
 
     public void setDoorOpen(Tile fightTile) {
-        isDoorOpen = true;
-        setChestTile(getChestTileAfterFight(fightTile));
-        getExitTile().getTileDisplay().setTexturePath("allTextures/openDoor.png");
-
+        if (!isDoorOpen) {
+            isDoorOpen = true;
+            setChestTile(getRandomTile());
+            setPotionTile(getChestTileAfterFight(fightTile));
+            getExitTile().getTileDisplay().setTexturePath("allTextures/openDoor.png");
+        }
     }
 
     public List<Tile> getTiles() {
@@ -190,6 +202,7 @@ public class Room {
 
     public Tile getChestTileAfterFight(Tile fightTile) {
         List<Tile> tiles = getNeighbors(fightTile, 1);
+        Collections.shuffle(tiles);
         for (Tile tile : tiles) {
             if (tile.getTileDisplay().isWalkable()) {
                 return tile;
@@ -204,5 +217,31 @@ public class Room {
 
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public Potion generateAPotion() {
+        int n = (int) (Math.random() * 2) + 1;
+        Potion pot = new BigPotion(Stat.HP);
+        switch (n) {
+            case 1:
+                pot = new LittlePotion(Stat.HP);
+                break;
+            case 2:
+                pot = new BigPotion(Stat.HP);
+        }
+        setPotion(pot);
+        return pot;
+    }
+
+    public void setPotionTile(Tile tile) {
+        potion.setPosition(tile);
+    }
+
+    public Potion getPotion() {
+        return potion;
+    }
+
+    public void setPotion(Potion potion) {
+        this.potion = potion;
     }
 }
