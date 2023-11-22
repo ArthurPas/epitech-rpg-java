@@ -100,7 +100,7 @@ public class Game {
         stat.put(Stat.HP, 100);
         stat.put(Stat.STRENGTH, 1);
         stat.put(Stat.AGILITY, 10);
-        room.displayRandomPath(room.getEntry(), room.getExitTile(), 1);
+        room.displayRandomPath(room.getEntry(), room.getExitTile(), room.getRoomNumber());
         player.setPosition(room.getEntry());
         room.getMonster().drop();
         return room.getTiles();

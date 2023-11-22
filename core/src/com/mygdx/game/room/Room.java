@@ -172,8 +172,9 @@ public class Room {
     public void displayRandomPath(Tile begin, Tile end, int roomLevel) {
 //        TODO : room level management change texture*
         List<Tile> path = PathFinding.findAPath(this, begin, end);
+        TextureType ambiance = TileDisplay.getAmbianceWithRoomNb(roomLevel, Game.getDifficulty());
         for (Tile tile : path) {
-            tile.setTileDisplay(new TileDisplay(false, true, TextureType.CHILL_OUTSIDE));
+            tile.setTileDisplay(new TileDisplay(false, true, ambiance));
         }
         getExitTile().getTileDisplay().setTexturePath("allTextures/closedDoor.png");
     }
