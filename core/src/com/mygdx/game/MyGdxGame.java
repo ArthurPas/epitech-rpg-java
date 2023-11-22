@@ -17,6 +17,7 @@ import com.mygdx.interfaces.ChestInterface;
 import com.mygdx.game.room.Tile;
 import com.mygdx.interfaces.MenuInterface;
 import com.mygdx.item.*;
+import com.mygdx.item.Supplies.Potion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,9 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
     boolean up, down, left, right;
 
+    boolean potionTook = false;
+    Potion potion;
+    Sprite spritePotion;
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
@@ -102,6 +106,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         generator = new FreeTypeFontGenerator(Gdx.files.internal("hpFont.ttf"));
 
+        potion = actualRoom.generateAPotion();
 
         Timer.schedule(new Timer.Task() {
                            @Override
@@ -196,8 +201,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             //            Sprite littlePotion = new Sprite(new Texture("item/supplies/smallPotion.png"));
 
         }
-        actualRoom.getPotion().draw(batch);
-
     }
 
     @Override
@@ -279,6 +282,19 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             chestSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
             chestSprite.setPosition(actualRoom.getChestTile().getX(), actualRoom.getChestTile().getY());
             chestSprite.draw(batch);
+            if (!potionTook) {
+                spritePotion = new Sprite(new Texture(potion.getPathToAsset()));
+                spritePotion.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
+                spritePotion.setPosition(actualRoom.getPotion().getPosition().getX() + actualRoom.getRelativeWidth() / 4, actualRoom.getPotion().getPosition().getY() + actualRoom.getRelativeWidth() / 4);
+                spritePotion.draw(batch);
+
+            }
+            if (actualRoom.getPotion().getPosition().isNeighbor(actualRoom, player.getPosition()) && !potionTook) {
+                player.setStat(potion.getStat(), player.getStat().get(Stat.HP) + potion.getNumber());
+                System.out.println("you took a potion" + potion.getStat() + " " + potion.getNumber());
+                potionTook = true;
+            }
+
             Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
             player.setInChest(actualRoom.getNeighbors(actualRoom.getChestTile(), 1).contains(player.getPosition()));
             actualRoom.setDoorOpen(monster.getPosition());
@@ -318,6 +334,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             player.setInChest(false);
             moneyWon = false;
             actualRoom = game.nextRoom(actualRoom);
+            potion = actualRoom.generateAPotion();
             game.play(actualRoom);
             System.out.println(actualRoom.getRoomNumber());
             chest = new Chest(actualRoom.getRoomNumber(), 10);
