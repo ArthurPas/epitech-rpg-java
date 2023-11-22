@@ -277,8 +277,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             Item dropedItem = monster.getDroped();
             if (dropedItem != null) {
                 Sprite dropSprite = new Sprite(new Texture(dropedItem.getPathToAsset()));
-                dropSprite.setPosition(monster.getX(), monster.getY());
-                dropSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+                dropSprite.setPosition(monster.getX() + actualRoom.getRelativeWidth() / 2, monster.getY() + actualRoom.getRelativeWidth() / 2);
+                dropSprite.setSize(actualRoom.getRelativeWidth() / 2, actualRoom.getRelativeHeight() / 2);
                 dropSprite.draw(batch);
             }
 
