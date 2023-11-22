@@ -180,7 +180,11 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                         break;
                     case Input.Keys.D:
                         right = false;
-
+                        break;
+                    case Input.Keys.C:
+                        if (monster.isDead()) {
+                            player.setInChest(!player.isInChest());
+                        }
                         break;
                     default:
                         break;
@@ -296,7 +300,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             }
 
             Sound monsterDied = Gdx.audio.newSound(Gdx.files.internal("soundEffects/monsterDied.wav"));
-            player.setInChest(actualRoom.getNeighbors(actualRoom.getChestTile(), 1).contains(player.getPosition()));
             actualRoom.setDoorOpen(monster.getPosition());
 
             timeBeforeDeath += Gdx.graphics.getDeltaTime();
