@@ -26,6 +26,16 @@ public class TileDisplay {
         setTextureByType(isBorder, isWalkable, textureType);
     }
 
+    public static TextureType getAmbianceWithRoomNb(int roomNb, int totalRooms){
+        int nbChange = totalRooms/3;
+        if(roomNb>2*nbChange){
+            return TextureType.LAVA_DUNGEON;
+        }else if(roomNb>=nbChange){
+            return TextureType.INSIDE;
+        }
+        return TextureType.CHILL_OUTSIDE;
+    }
+
     //TODO Pas beau ca
     public void setTextureByType(boolean isBorder, boolean isWalkable, TextureType textureType){
         if(isWalkable){

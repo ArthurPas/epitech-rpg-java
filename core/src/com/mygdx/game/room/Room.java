@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.character.Monster;
 import com.mygdx.character.Stat;
+import com.mygdx.game.Game;
 import com.mygdx.interfaces.TextureType;
 import com.mygdx.interfaces.TileDisplay;
 import com.mygdx.item.Supplies.BigPotion;
@@ -43,7 +44,7 @@ public class Room {
         this.roomNumber = roomNumber;
         this.relativeWidth = Gdx.graphics.getHeight() / width;
         this.relativeHeight = Gdx.graphics.getWidth() / height;
-        this.tiles = createMap(1, width, height);
+        this.tiles = createMap(roomNumber, width, height);
         this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
     }
 
@@ -145,8 +146,10 @@ public class Room {
     //TODO implement the room level management and display the right texture
     public List<Tile> createMap(int roomLevel, int width, int height) {
         List<Tile> tiles = new ArrayList<>();
-        TileDisplay border = new TileDisplay(true, false, TextureType.CHILL_OUTSIDE);
-        TileDisplay wall = new TileDisplay(false, false, TextureType.CHILL_OUTSIDE);
+        System.out.println("trop facile : "+Game.getDifficulty());;
+        TextureType ambiance = TileDisplay.getAmbianceWithRoomNb(roomLevel, Game.getDifficulty());
+        TileDisplay border = new TileDisplay(true, false, ambiance);
+        TileDisplay wall = new TileDisplay(false, false, ambiance);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if ((i == 0) || (j % height == 0) || (j % width == width - 1) || (i % height == height - 1)) {
