@@ -221,7 +221,7 @@ public class Room {
 
     public Potion generateAPotion() {
         int n = (int) (Math.random() * 2) + 1;
-        Potion pot = new LittlePotion(Stat.HP);
+        Potion pot = new BigPotion(Stat.HP);
         switch (n) {
             case 1:
                 pot = new LittlePotion(Stat.HP);
@@ -235,17 +235,6 @@ public class Room {
 
     public void setPotionTile(Tile tile) {
         potion.setPosition(tile);
-    }
-
-    public Tile findTilePotion(Tile entry) {
-        for (Tile tile : getNeighbors(entry, 100)) {
-            System.out.println(tile);
-            if (tile.getTileDisplay().isWalkable() && !tile.getTileDisplay().isBorder()) {
-
-                return tile;
-            }
-        }
-        return getEntry();
     }
 
     public Potion getPotion() {
