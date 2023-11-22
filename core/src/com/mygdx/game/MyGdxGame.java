@@ -94,7 +94,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         chest = new Chest(actualRoom.getRoomNumber(), 10);
         chestInterface = new ChestInterface(this.player, batch, 2, this.chest);
         chestSprites = chestInterface.displayChestInterface();
-        itemsSprites = chestInterface.getItemSprites();
 
         menu = new MenuInterface(player, batch);
 
@@ -119,7 +118,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 player.move(actualRoom, player.getPosition(), x, Gdx.graphics.getHeight() - y);
                 heroSprite = new Sprite(new Texture(player.getPathToAsset()));
                 if (player.isInChest() && chestInterface.handleClick(x, y)) {
-                    itemsSprites = chestInterface.getItemSprites();
                     itemSelectedColor = Color.GREEN;
                 } else {
                     itemSelectedColor = Color.RED;
@@ -333,7 +331,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 allChestSprite.draw(batch);
             }
             int[] coords = chestInterface.coordItemSelected(chestInterface.getSpriteSelected());
-            itemsPrices = chestInterface.displayWeaponCost();
             chestInterface.displayAllMoney();
             Sprite easterEgs = new Sprite(new Texture("nem.jpg"));
             easterEgs.setSize(0, 0);
