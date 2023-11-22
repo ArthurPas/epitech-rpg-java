@@ -44,6 +44,8 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
     int dammageDeal;
     Sprite heroSprite;
+
+    Sprite womenSprite;
     Sprite monsterSprite;
     List<Sprite> chestSprites;
     List<Sprite> itemsSprites;
@@ -60,13 +62,12 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Boolean heroDiedAudioPlayed = false;
 
     boolean monsterDiedAudioPlayed = false;
+    boolean womenAudioPlayed = false;
 
     float timeBeforeDeath = 0f;
     float deathDelay = 1f;
-    boolean moveRight = false;
-    boolean moveLeft = false;
-    boolean moveTop = false;
-    boolean moveBottom = false;
+    float delayWomen = 3f;
+
     InputAdapter inputAdapter;
     FreeTypeFontGenerator generator;
     MenuInterface menu;
@@ -80,13 +81,17 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        game = new Game(4);
+        game = new Game(2);
         actualRoom = game.getRooms().get(0);
         game.play(actualRoom);
         player = game.getPlayer();
         player.setX(player.getPosition().getX());
         player.setY(player.getPosition().getY());
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
+
+        womenSprite = new Sprite(new Texture(Gdx.files.internal("character/women.png")));
+        womenSprite.setPosition(actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getX(),actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getY());
+        womenSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
 
         monster = actualRoom.getMonster();
         monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
@@ -204,16 +209,26 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         heroSprite.setPosition(player.getX(), player.getY());
 
+        if(actualRoom.getRoomNumber() == game.getDifficulty()){
+            monsterSprite.setSize(actualRoom.getRelativeWidth() *2, actualRoom.getRelativeHeight()*2);
+        }
+        else{
+            monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
 
-        monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
+        }
         monsterSprite.setPosition(monster.getPosition().getX(), monster.getPosition().getY());
-
 
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
         if (player.isInFight()) {
-            if (!youWillDieAudioPlayed) {
-                Sound youwillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
-                youwillDieAudio.play(1.0f);
+            if (!youWillDieAudioPlayed &&  actualRoom.getRoomNumber() == game.getDifficulty()){
+                Sound youWillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
+                youWillDieAudio.play(1.0f);
+                youWillDieAudioPlayed = true;
+
+            }
+            else if(!youWillDieAudioPlayed){
+                Sound randomMonsterAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/randomMonster.mp3"));
+                randomMonsterAudio.play(1.0f);
                 youWillDieAudioPlayed = true;
             }
             FreeTypeFontGenerator.FreeTypeFontParameter parameterMonster = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -307,7 +322,19 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         }
         if (game.isWin()) {
             //TODO : add a win screen
-            System.out.println("You win");
+            womenSprite.draw(batch);
+            Sound womenAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/womenAudio2.wav"));
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    if(!womenAudioPlayed){
+                        Sound womenAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/womenAudio2.wav"));
+                        womenAudio.play(1.0f);
+                        womenAudioPlayed = true;
+                    }
+                }
+            }, delayWomen);
+
         } else if (actualRoom.isDoorOpen() && actualRoom.getNeighbors(actualRoom.getExitTile(), 1).contains(player.getPosition())) {
             player.setInChest(false);
             moneyWon = false;

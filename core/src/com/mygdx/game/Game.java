@@ -60,11 +60,19 @@ public class Game {
             stats.put(Stat.AGILITY, 10 + i);
             stats.put(Stat.HP, 50 / (i * 4));
             System.out.println("yo yo yo" + stats.get(Stat.HP));
-            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 10, 1, 0, "item/weapon/sword22.png"), null, (float) 75 / i * 1.5f, 0.7f);
+            Monster monster = new Monster("Wolf", stats, new Weapon("testForDev", 1, Rarity.COMMON, 10, 10, 1, 0, "item/weapon/sword22.png"), null, (float) 75 / i * 1.5f, 0.7f,false);
+            Monster bossMonster = new Monster("Boss", stats, new Weapon("testForDev", 1, Rarity.LEGENDARY, 10, 10, 8, 0, "item/weapon/sword25.png"), null, (float) 75 / i * 1.5f, 0.7f, true);
             System.out.println(Monster.indexMonster);
-            Room room = new Room(10, 10, monster, i);
-            monster.setPosition(room.getExitTile());
-            rooms.add(room);
+            if(i == difficulty){
+                Room room = new Room(10, 10, bossMonster, i);
+                bossMonster.setPosition(room.getExitTile());
+                rooms.add(room);
+            }
+            else{
+                Room room = new Room(10, 10, monster, i);
+                monster.setPosition(room.getExitTile());
+                rooms.add(room);
+            }
         }
         return rooms;
     }
@@ -82,7 +90,8 @@ public class Game {
     }
 
     public boolean isWin() {
-        return isWin;
+        return MyGdxGame.actualRoom.getRoomNumber() == difficulty && MyGdxGame.actualRoom.getMonster().isDead();
+
     }
 
     public List<Tile> play(Room room) {

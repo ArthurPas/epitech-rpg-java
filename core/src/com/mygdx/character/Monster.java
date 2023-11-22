@@ -26,16 +26,23 @@ public class Monster extends Character {
 
     private String pathToAsset;
 
-    public Monster(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position, float dropWeaponProb, float vivacity) {
+    boolean isBoss;
+    public Monster(String name, Map<Stat, Integer> stat, Weapon weaponEquiped, Tile position, float dropWeaponProb, float vivacity, boolean isBoss) {
         super(name, stat, weaponEquiped, position);
         this.dropWeaponProb = dropWeaponProb;
         this.vivacity = vivacity;
         File dir = new File("character/monsters");
         File[] monsterAssets = dir.listFiles();
         assert monsterAssets != null;
-        this.pathToAsset = monsterAssets[(indexMonster*3)%monsterAssets.length].getPath();
-        System.out.println(pathToAsset);
-        indexMonster++;
+        if(isBoss){
+            setPathToAsset("character/monsters/lich.png");
+        }
+        else{
+            this.pathToAsset = monsterAssets[(indexMonster*3)%monsterAssets.length].getPath();
+            indexMonster++;
+        }
+
+        this.isBoss = isBoss;
     }
     public void move(Room room, Tile position) {
         List<Tile> neighbors = room.getNeighborsWalkable(position,1);
