@@ -19,7 +19,7 @@ public class Game {
 
     static private Player player;
 
-    private int difficulty;
+    private static int difficulty;
     private boolean isWin = false;
 
 
@@ -28,11 +28,11 @@ public class Game {
     }
 
     public void setPlayer(Player player) {
-        this.player = player;
+        Game.player = player;
     }
 
     public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
+        Game.difficulty = difficulty;
     }
 
     public void setWin(boolean win) {
@@ -40,13 +40,14 @@ public class Game {
     }
 
     public Game(int difficulty) {
+
+        Game.difficulty = difficulty;
         this.rooms = createsAllRooms(difficulty);
         player = new Player(1, null, 25, null);
         List<Item> stuff = new ArrayList<>();
         stuff.add(new Weapon("testForDev4", 1, Rarity.COMMON, 10, 5, 10, 0, "item/weapon/sword22.png"));
         player.setInventory(stuff);
         player.setWeaponEquiped((Weapon) stuff.get(0));
-        this.difficulty = difficulty;
 
     }
 
@@ -85,7 +86,7 @@ public class Game {
         return player;
     }
 
-    public int getDifficulty() {
+    public static int getDifficulty() {
         return difficulty;
     }
 

@@ -61,7 +61,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Chest chest;
 
     Color itemSelectedColor = Color.GREEN;
-    ;
     Boolean youWillDieAudioPlayed = false;
     Boolean heroDiedAudioPlayed = false;
 
@@ -88,7 +87,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        game = new Game(2);
+        game = new Game(9);
         actualRoom = game.getRooms().get(0);
         game.play(actualRoom);
         player = game.getPlayer();
