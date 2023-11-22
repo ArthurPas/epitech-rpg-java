@@ -194,6 +194,7 @@ public class Room {
         this.chestTile = chestTile;
     }
 
+<<<<<<< HEAD
     public Tile getChestTileAfterFight(Tile fightTile) {
         List<Tile> tiles = getNeighbors(fightTile, 1);
         for (Tile tile : tiles) {
@@ -212,6 +213,8 @@ public class Room {
         this.roomNumber = roomNumber;
     }
 
+=======
+>>>>>>> 4f478a894c221383fae820be0b210afe9df4c75d
     public void generateAPotion() {
         Tile tilePotion = getEntry();
         int n = (int) (Math.random() * 2);
