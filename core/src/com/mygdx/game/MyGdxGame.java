@@ -338,6 +338,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             moneyWon = false;
             actualRoom = game.nextRoom(actualRoom);
             potion = actualRoom.generateAPotion();
+            potionTook = false;
             game.play(actualRoom);
             System.out.println(actualRoom.getRoomNumber());
             chest = new Chest(actualRoom.getRoomNumber(), 10);
@@ -356,6 +357,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             for (Sprite allChestSprite : chestSprites) {
                 allChestSprite.draw(batch);
             }
+            itemsPrices = chestInterface.displayWeaponCost();
             int[] coords = chestInterface.coordItemSelected(chestInterface.getSpriteSelected());
             chestInterface.displayAllMoney();
             Sprite easterEgs = new Sprite(new Texture("nem.jpg"));
