@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.character.Player;
+import com.mygdx.character.Stat;
 import com.mygdx.item.Chest;
 import com.mygdx.item.Item;
 import com.mygdx.item.Weapon;
@@ -270,6 +271,15 @@ public class ChestInterface {
             BitmapFont font = generator.generateFont(parameter);
             font.draw(batch, String.valueOf(item.getCost()), spriteCost.getX() + sprite.getWidth() / 2, spriteCost.getY() + font.getLineHeight());
             fonts.add(font);
+
+            Sprite attackSprite = new Sprite(new Texture(Gdx.files.internal("item/weapon/weaponDamage.png")));
+            attackSprite.setSize(20, 20);
+            attackSprite.setPosition(sprite.getX()+sprite.getWidth()/2+10, (sprite.getY() - sprite.getHeight() / 4) - MARGIN_COIN);
+            attackSprite.draw(batch);
+            BitmapFont fontAtt = generator.generateFont(parameter);
+            Weapon weapon = (Weapon)linkItemsSprite.get(sprite);
+            fontAtt.draw(batch, String.valueOf(weapon.getDamage()), attackSprite.getX() + attackSprite.getWidth(), attackSprite.getY() + fontAtt.getLineHeight());
+
             generator.dispose();
         }
         return fonts;
