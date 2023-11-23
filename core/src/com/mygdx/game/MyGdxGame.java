@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,7 @@ import com.mygdx.game.room.Room;
 import com.mygdx.interfaces.ChestInterface;
 import com.mygdx.game.room.Tile;
 import com.mygdx.interfaces.MenuInterface;
+import com.mygdx.interfaces.TextureType;
 import com.mygdx.item.*;
 import com.mygdx.item.Supplies.Potion;
 
@@ -66,6 +68,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
     boolean monsterDiedAudioPlayed = false;
     boolean womenAudioPlayed = false;
+    boolean musicWinPlayed = false;
 
     float timeBeforeDeath = 0f;
     float deathDelay = 1f;
@@ -81,19 +84,33 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     Potion potion;
     Sprite spritePotion;
 
+
+    Music musicTheme;
+
+    Music musicDungeon;
+    Music musicLava;
+    Music musicWin;
+
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
     @Override
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        game = new Game(9);
+        game = new Game(6);
         actualRoom = game.getRooms().get(0);
         game.play(actualRoom);
         player = game.getPlayer();
         player.setX(player.getPosition().getX());
         player.setY(player.getPosition().getY());
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
+
+
+        musicTheme = Gdx.audio.newMusic(Gdx.files.internal("soundEffects/forestMusic.mp3"));
+        musicTheme.setLooping(true);
+        musicTheme.setVolume(0.3f);
+        musicTheme.play();
+
 
         womenSprite = new Sprite(new Texture(Gdx.files.internal("character/women.png")));
         womenSprite.setPosition(actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getX(),actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getY());
@@ -347,7 +364,18 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
         if (game.isWin()) {
             //TODO : add a win screen
             womenSprite.draw(batch);
-            Sound womenAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/womenAudio2.wav"));
+
+           if(!musicWinPlayed) {
+               musicTheme.stop();
+               musicWin = Gdx.audio.newMusic(Gdx.files.internal("soundEffects/winMusic.mp3"));
+               musicWin.setLooping(true);
+               musicWin.setVolume(0.3f);
+               musicWin.play();
+               musicWinPlayed = true;
+
+           }
+
+
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
@@ -363,6 +391,28 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             player.setInChest(false);
             moneyWon = false;
             actualRoom = game.nextRoom(actualRoom);
+
+
+
+                int nbChange = Game.getDifficulty()/3;
+                if(actualRoom.getRoomNumber()>2*nbChange){
+                    musicTheme.stop();
+                    musicTheme = Gdx.audio.newMusic(Gdx.files.internal("soundEffects/lavaDungeonMusic.mp3"));
+
+                }else if(actualRoom.getRoomNumber()>nbChange){
+                    musicTheme.stop();
+                    musicTheme = Gdx.audio.newMusic(Gdx.files.internal("soundEffects/dungeonMusic.mp3"));
+
+                }
+                else{
+                    System.out.println("heloo");
+                }
+            musicTheme.setLooping(true);
+            musicTheme.play();
+
+
+
+
             potion = actualRoom.generateAPotion();
             potionTook = false;
             game.play(actualRoom);

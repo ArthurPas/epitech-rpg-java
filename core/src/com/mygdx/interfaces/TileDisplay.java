@@ -30,7 +30,7 @@ public class TileDisplay {
         int nbChange = totalRooms/3;
         if(roomNb>2*nbChange){
             return TextureType.LAVA_DUNGEON;
-        }else if(roomNb>=nbChange){
+        }else if(roomNb>nbChange){
             return TextureType.INSIDE;
         }
         return TextureType.CHILL_OUTSIDE;
