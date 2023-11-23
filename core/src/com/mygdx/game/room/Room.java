@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.character.Monster;
+import com.mygdx.character.Player;
 import com.mygdx.character.Stat;
 import com.mygdx.game.Game;
 import com.mygdx.interfaces.TextureType;
@@ -25,6 +26,8 @@ public class Room {
     private List<Tile> tiles;
     private int relativeWidth;
     private int relativeHeight;
+
+    private int messageChatSize;
     private boolean isDoorOpen;
     private int roomNumber;
     private Monster monster;
@@ -32,6 +35,9 @@ public class Room {
     private Tile chestTile;
     Potion potion;
 
+    String message;
+
+    static TextureType ambiance;
 
     public Tile getExitTile() {
         return tiles.get(tiles.size() - height - 2);
@@ -42,14 +48,38 @@ public class Room {
         this.height = height;
         this.monster = monster;
         this.roomNumber = roomNumber;
-        this.relativeWidth = Gdx.graphics.getHeight() / width;
-        this.relativeHeight = Gdx.graphics.getWidth() / height;
+        this.relativeWidth = Gdx.graphics.getWidth() / width;
+        this.messageChatSize = (Gdx.graphics.getHeight() / 8);
+        this.relativeHeight = (Gdx.graphics.getHeight() - messageChatSize) / height;
+        ambiance = TileDisplay.getAmbianceWithRoomNb(roomNumber, Game.getDifficulty());
         this.tiles = createMap(roomNumber, width, height);
         this.chestTile = tiles.get((int) (Math.random() * tiles.size()));
+        setMessage();
     }
 
     public Monster getMonster() {
         return monster;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setMessage() {
+        if (ambiance.equals(TextureType.CHILL_OUTSIDE)) {
+            this.message = Game.getPlayer().getName()+": Such an epic Battle, I’m starving I can’t wait to be back home and devore those delicious spring rolls!";
+            this.monster.setMessage(monster.getName() + ": You’ll never gonna pass , i’m here to kill you !");
+        } else if (ambiance.equals(TextureType.INSIDE)) {
+            this.message = "I don't have a choice, I have to pass through this dungeon to avoid the monsters.";
+            this.monster.setMessage(monster.getName() + ": Mouhaha stupid human, you shall not pass !");
+        } else if (ambiance.equals(TextureType.LAVA_DUNGEON)) {
+            this.message = "Oh damn where am I ! its seems dangerous around here I’m not ready to eat !";
+            this.monster.setMessage(monster.getName() + "I’m here to kill you !");
+        }
     }
 
     public List<Tile> getFightsTiles() {
@@ -146,8 +176,8 @@ public class Room {
     //TODO implement the room level management and display the right texture
     public List<Tile> createMap(int roomLevel, int width, int height) {
         List<Tile> tiles = new ArrayList<>();
-        System.out.println("trop facile : "+Game.getDifficulty());;
-        TextureType ambiance = TileDisplay.getAmbianceWithRoomNb(roomLevel, Game.getDifficulty());
+        System.out.println("trop facile : " + Game.getDifficulty());
+        ;
         TileDisplay border = new TileDisplay(true, false, ambiance);
         TileDisplay wall = new TileDisplay(false, false, ambiance);
         for (int i = 0; i < width; i++) {
