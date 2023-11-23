@@ -6,6 +6,7 @@ import com.mygdx.game.Game;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.room.Room;
 import com.mygdx.game.room.Tile;
+import com.mygdx.interfaces.TextureType;
 import com.mygdx.item.Item;
 import com.mygdx.item.Weapon;
 import com.mygdx.item.equipment.Equipment;
@@ -19,7 +20,6 @@ public class Monster extends Character {
     private float dropWeaponProb;
     private float vivacity;
     private Item droped;
-
     private boolean alreadyEquiped = false;
 
     public static int indexMonster = 0;

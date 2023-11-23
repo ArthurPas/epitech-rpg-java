@@ -67,6 +67,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean monsterDiedAudioPlayed = false;
     boolean womenAudioPlayed = false;
 
+    boolean isRoomLoreDisplayed, isMonsterLoreDisplayed;
     float timeBeforeDeath = 0f;
     float deathDelay = 1f;
     float delayWomen = 3f;
@@ -80,6 +81,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     boolean potionTook = false;
     Potion potion;
     Sprite spritePotion;
+    BitmapFont fontMonsterLore;
 
     //    FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 //    BitmapFont fontHP;
@@ -87,16 +89,17 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-        game = new Game(9);
+        game = new Game(6);
         actualRoom = game.getRooms().get(0);
         game.play(actualRoom);
+        System.out.println("Yo o" + game.getPlayer());
         player = game.getPlayer();
         player.setX(player.getPosition().getX());
         player.setY(player.getPosition().getY());
         heroSprite = new Sprite(new Texture(player.getPathToAsset()));
 
         womenSprite = new Sprite(new Texture(Gdx.files.internal("character/women.png")));
-        womenSprite.setPosition(actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getX(),actualRoom.getNeighborsWalkable(player.getPosition(),1).get(0).getY());
+        womenSprite.setPosition(actualRoom.getNeighborsWalkable(player.getPosition(), 1).get(0).getX(), actualRoom.getNeighborsWalkable(player.getPosition(), 1).get(0).getY());
         womenSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
 
         monster = actualRoom.getMonster();
@@ -214,17 +217,25 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
     @Override
     public void render() {
         batch.begin();
-        drawFloor();
         Gdx.input.setInputProcessor(inputAdapter);
+        drawFloor();
+        Sprite chatSprite = new Sprite(new Texture("chat.png"));
+        chatSprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()/8);
+        chatSprite.setPosition(0,Gdx.graphics.getHeight()-Gdx.graphics.getHeight()/8);
+        chatSprite.draw(batch);
+        FreeTypeFontGenerator.FreeTypeFontParameter parameterLore = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameterLore.color = Color.WHITE;
+        parameterLore.size = 13;
+        BitmapFont fontRoomLore = generator.generateFont(parameterLore);
+        fontRoomLore.draw(batch, actualRoom.getMessage(), Gdx.graphics.getWidth()/4, chatSprite.getY()+60);
         monsterSprite.draw(batch);
         heroSprite.draw(batch);
         heroSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
         heroSprite.setPosition(player.getX(), player.getY());
 
-        if(actualRoom.getRoomNumber() == game.getDifficulty()){
-            monsterSprite.setSize(actualRoom.getRelativeWidth() *2, actualRoom.getRelativeHeight()*2);
-        }
-        else{
+        if (actualRoom.getRoomNumber() == game.getDifficulty()) {
+            monsterSprite.setSize(actualRoom.getRelativeWidth() * 2, actualRoom.getRelativeHeight() * 2);
+        } else {
             monsterSprite.setSize(actualRoom.getRelativeWidth(), actualRoom.getRelativeHeight());
 
         }
@@ -232,13 +243,14 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
 
         player.canFight(monster.getPosition().isNeighbor(actualRoom, player.getPosition()) && !monster.isDead() && !player.isDead());
         if (player.isInFight()) {
-            if (!youWillDieAudioPlayed &&  actualRoom.getRoomNumber() == game.getDifficulty()){
+            BitmapFont fontMonsterLore = generator.generateFont(parameterLore);
+            fontMonsterLore.draw(batch, actualRoom.getMonster().getMessage(), Gdx.graphics.getWidth()/4, chatSprite.getY()+30);
+            if (!youWillDieAudioPlayed && actualRoom.getRoomNumber() == game.getDifficulty()) {
                 Sound youWillDieAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/youWillDie.wav"));
                 youWillDieAudio.play(1.0f);
                 youWillDieAudioPlayed = true;
 
-            }
-            else if(!youWillDieAudioPlayed){
+            } else if (!youWillDieAudioPlayed) {
                 Sound randomMonsterAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/randomMonster.mp3"));
                 randomMonsterAudio.play(1.0f);
                 youWillDieAudioPlayed = true;
@@ -248,6 +260,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             parameterMonster.size = 25 + monster.getStat().get(Stat.HP);
             BitmapFont fontMonster = generator.generateFont(parameterMonster);
             fontMonster.draw(batch, String.valueOf(monster.getStat().get(Stat.HP)), monster.getPosition().getX() - actualRoom.getRelativeWidth() / 2, monster.getPosition().getY() + actualRoom.getRelativeHeight());
+
             FreeTypeFontGenerator.FreeTypeFontParameter paramaterPlayer = new FreeTypeFontGenerator.FreeTypeFontParameter();
             paramaterPlayer.size = 25;
             BitmapFont fontPlayerHP = generator.generateFont(paramaterPlayer);
@@ -325,9 +338,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
                 timeBeforeDeath = 0f;
             }
             youWillDieAudioPlayed = false;
-
         }
-
         if (player.isDead()) {
             heroSprite = new Sprite(new Texture("character/heroDied.png"));
             heroSprite.setPosition(player.getPosition().getX(), player.getPosition().getY());
@@ -351,7 +362,7 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    if(!womenAudioPlayed){
+                    if (!womenAudioPlayed) {
                         Sound womenAudio = Gdx.audio.newSound(Gdx.files.internal("soundEffects/womenAudio2.wav"));
                         womenAudio.play(1.0f);
                         womenAudioPlayed = true;
@@ -375,7 +386,6 @@ public class MyGdxGame extends ApplicationAdapter implements ApplicationListener
             monsterSprite = new Sprite(new Texture(actualRoom.getMonster().getPathToAsset()));
             monsterDiedAudioPlayed = false;
             moneyWon = false;
-            System.out.println(actualRoom);
 
         }
         //TODO: implement the chest interaction in game (set true for dev mode)

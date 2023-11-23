@@ -11,6 +11,8 @@ public class Character extends InputAdapter {
     private String name;
     private Map<Stat, Integer> stat;
 
+    private String message;
+
     private int x;
     private int y;
 
@@ -94,6 +96,13 @@ public class Character extends InputAdapter {
         return name;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
     public void setName(String name) {
         this.name = name;
     }

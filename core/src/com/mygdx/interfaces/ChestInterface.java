@@ -167,7 +167,7 @@ public class ChestInterface {
             if (isIn((int) itemSprite.getX(), (int) itemSprite.getY(), mouseXWorld, mouseYWorld, (int) itemSprite.getWidth(), (int) itemSprite.getHeight())) {
                 //and set itemSelected with the map<Sprite,Item>
                 itemSelected = linkItemsSprite.get(itemSprite);
-                if(player.isInChest()){
+                if (player.isInChest()) {
                     selectStuff.play(1.0f);
                 }
                 //set also the sprite selected
@@ -178,7 +178,7 @@ public class ChestInterface {
         for (Sprite sellItemSprite : spritesSell) {
             if (isIn((int) sellItemSprite.getX(), (int) sellItemSprite.getY(), mouseXWorld, mouseYWorld, (int) sellItemSprite.getWidth(), (int) sellItemSprite.getHeight())) {
                 System.out.println("you clicked on weapons to sell");
-                if(player.isInChest()){
+                if (player.isInChest()) {
                     selectStuff.play(1.0f);
                 }
                 itemSelected = linkItemsSprite.get(sellItemSprite);
@@ -189,7 +189,7 @@ public class ChestInterface {
 
         if (isIn((int) buyButton.getX(), (int) buyButton.getY(), mouseXWorld, mouseYWorld, (int) buyButton.getWidth(), (int) buyButton.getHeight())) {
             System.out.println("you clicked on buyButton");
-            if(player.isInChest()){
+            if (player.isInChest()) {
                 moneySound.play(1.0f);
             }
             Item item = getItemSelected();
@@ -206,15 +206,10 @@ public class ChestInterface {
                 return true;
             }
             return false;
-
-
         } else if (
-
-                isIn((int) sellButton.
-
-                        getX(), (int) sellButton.getY(), mouseXWorld, mouseYWorld, (int) sellButton.getWidth(), (int) sellButton.getHeight())) {
+            isIn((int) sellButton.getX(), (int) sellButton.getY(), mouseXWorld, mouseYWorld, (int) sellButton.getWidth(), (int) sellButton.getHeight())) {
             System.out.println("you clicked on sellButton");
-            if(player.isInChest()){
+            if (player.isInChest()) {
                 moneySound.play(1.0f);
             }
             Item item = getItemSelected();
@@ -231,10 +226,10 @@ public class ChestInterface {
                 setSpriteSelected(null);
                 setItemSelected(null);
                 return true;
+            }
         }
-    }
         return false;
-}
+    }
 
     public Item getItemSelected() {
         return itemSelected;
@@ -244,7 +239,6 @@ public class ChestInterface {
         return spriteSelected;
 
     }
-
     //method to send the coordinate of the sprite selected to the render so all the sprites draw are only in render function (maybe useless)
     public int[] coordItemSelected(Sprite selected) {
         if (selected != null) {
@@ -268,7 +262,6 @@ public class ChestInterface {
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("moneyFont.ttf"));
             FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
             parameter.size = 25;
-
             Item item = linkItemsSprite.get(sprite);
             Sprite spriteCost = new Sprite(new Texture("coin.png"));
             spriteCost.setPosition(sprite.getX() - sprite.getWidth() / 4, (sprite.getY() - sprite.getHeight() / 4) - MARGIN_COIN);
